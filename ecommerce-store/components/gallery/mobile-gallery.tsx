@@ -1,13 +1,14 @@
-import * as React from "react"
-import { Card, CardContent } from "@/components/ui/card"
+import * as React from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import {
      Carousel,
      CarouselContent,
      CarouselItem,
-} from "@/components/ui/carousal"
+} from "@/components/ui/carousal";
+import Image from "next/image"; // Import Next.js Image component
 
 interface MobileGalleryProps {
-     images: string[]
+     images: string[];
 }
 
 export function MobileGallery({ images }: MobileGalleryProps) {
@@ -21,10 +22,12 @@ export function MobileGallery({ images }: MobileGalleryProps) {
                                    <div className="p-1 rounded-lg">
                                         <Card className="rounded-xl">
                                              <CardContent className="flex aspect-[9/11] items-center justify-center p-0 rounded-lg ">
-                                                  <img
+                                                  <Image // Use Next.js Image component
                                                        src={image}
                                                        alt={`Image ${index + 1}`}
-                                                       className="object-cover w-full h-full rounded-lg"
+                                                       fill // Fills the parent container
+                                                       style={{ objectFit: "cover" }} // Ensure the image covers the area
+                                                       className="rounded-lg"
                                                   />
                                              </CardContent>
                                         </Card>
@@ -34,5 +37,5 @@ export function MobileGallery({ images }: MobileGalleryProps) {
                     </CarouselContent>
                </Carousel>
           </div>
-     )
+     );
 }
