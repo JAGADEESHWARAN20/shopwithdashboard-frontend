@@ -8,25 +8,33 @@ import getCategories from '@/actions/get-categories';
 
 
 const Navbar = async () => {
-     const categories = await getCategories();
-     return (
-          <>
-               <div className="border-b">
-                    <Container>
-                         <div className='relative px-4 sm:px-4 lg:px-8 flex h-16 items-center'>
-                              <Link href={'/'} className="ml-2 sm:ml-2 lg:ml-4 lg:mx-0 flex gap-x-2">
-                                   <p className='text-3xl font-bold'>Store</p>
-                              </Link>
-                              <MainNav data={categories} />
-                              <NavBarActions />
-                         </div>
+     try {
+          const categories = await getCategories();
 
-                    </Container>
+          if (!categories) {
+               return null;
+          }
 
-               </div>
-          </>
-     )
-}
+          return (
+               <>
+                    <div className="border-b">
+                         <Container>
+                              <div className='relative px-4 sm:px-4 lg:px-8 flex h-16 items-center'>
+                                   <Link href={'/'} className="ml-2 sm:ml-2 lg:ml-4 lg:mx-0 flex gap-x-2">
+                                        <p className='text-3xl font-bold'>Store</p>
+                                   </Link>
+                                   <MainNav data={categories} />
+                                   <NavBarActions />
+                              </div>
+                         </Container>
+                    </div>
+               </>
+          );
+     } catch (error) {
+          console.error('Error in Navbar:', error);
+          return null;
+     }
+};
 
 export default Navbar;
 

@@ -6,6 +6,7 @@ import Navbar from "@/components/navbar";
 import { Toaster } from 'react-hot-toast';
 import ModalProvider from "@/providers/modal-providers";
 import ToastProvider from "@/providers/toast-provider";
+import Script from "next/script";
 
 const font = Urbanist({ subsets: ['latin'] })
 
@@ -21,9 +22,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={font.className}
-      >
+      <head>
+        <Script
+          src="https://checkout.razorpay.com/v1/checkout.js"
+          strategy="beforeInteractive"
+        />
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+      </head>
+      <body className={font.className}>
         <ModalProvider />
         <ToastProvider />
         <Navbar />
