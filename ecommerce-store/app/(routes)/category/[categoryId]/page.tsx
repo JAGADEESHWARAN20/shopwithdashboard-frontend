@@ -7,7 +7,7 @@ import Container from "@/components/ui/container";
 import Filter from "@/app/(routes)/category/components/filter";
 import NoResults from "@/components/ui/no-results";
 import ProductCard from "@/components/ui/product-card";
-import { Product } from "@/types";
+
 import MobileFilters from "../components/mobile-filter";
 export const revalidate = 0;
 
