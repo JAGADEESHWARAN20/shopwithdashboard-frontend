@@ -22,7 +22,7 @@ const Model: React.FC<ModalProps> = ({ open, onClose, children }) => {
                                    <DialogPanel className={'overflow-hidden rounded-lg text-left w-full max-w-3xl align-middle'}>
                                         <div className="relative flex w-full items-center overflow-hidden bg-white px-4 pb-8 pt-14 shadow-2xl sm:px-6 sm:pt-8 md:p-6 lg:p-8">
                                              <div className="absolute top-4 right-4">
-                                                  <IconButton className="" icon={<X size={15} onClick={onClose} />}></IconButton>
+                                                  <IconButton  icon={<X size={15} onClick={onClose} />}></IconButton>
                                              </div>
                                              {children}
                                         </div>
