@@ -7,15 +7,17 @@ import Container from "@/components/ui/container";
 import Filter from "@/app/(routes)/category/components/filter";
 import NoResults from "@/components/ui/no-results";
 import ProductCard from "@/components/ui/product-card";
-
 import MobileFilters from "../components/mobile-filter";
+
 export const revalidate = 0;
 
 interface CategoryPageProps {
-     params: any,
+     params: {
+          categoryId: string;
+     };
      searchParams: {
-          colorId?: string; // Make optional as it may not always be present
-          sizeId?: string;  // Make optional as it may not always be present
+          colorId?: string;
+          sizeId?: string;
      };
 }
 
@@ -37,9 +39,7 @@ const CategoryPage = async ({ params, searchParams }: CategoryPageProps) => {
           return (
                <div className="bg-white">
                     <Container>
-                         <p className="text-red-500 text-center">
-                              Something went wrong while loading the page.
-                         </p>
+                         <p className="text-red-500 text-center">Something went wrong while loading the page.</p>
                     </Container>
                </div>
           );
