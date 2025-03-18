@@ -1,24 +1,21 @@
 import getProduct from "@/actions/get-product";
 import getProducts from "@/actions/get-products";
 import Container from "@/components/ui/container";
-import ProductList from "@/components/product-list"
-import Gallery from "@/components/gallery"
+import ProductList from "@/components/product-list";
+import Gallery from "@/components/gallery";
 import Info from "@/components/info";
-import { MobileGallery } from "@/components/gallery/mobile-gallery"
+import { MobileGallery } from "@/components/gallery/mobile-gallery";
 
 interface ProductPageProps {
-     params: {
-          productId: string;
-     }
+     params: Promise<{ productId: string }>;
 }
 
-const ProductPage: React.FC<ProductPageProps> = async ({
-     params
-}) => {
-     const concurrencyParams = await params;
-     const product = await getProduct(concurrencyParams.productId);
+const ProductPage = async ({ params }: ProductPageProps) => {
+     const { productId } = await params;
+
+     const product = await getProduct(productId);
      const suggestedProducts = await getProducts({
-          categoryId: product?.category?.id
+          categoryId: product?.category?.id,
      });
 
      return (
@@ -43,7 +40,7 @@ const ProductPage: React.FC<ProductPageProps> = async ({
                     </div>
                </Container>
           </div>
-     )
-}
+     );
+};
 
 export default ProductPage;
