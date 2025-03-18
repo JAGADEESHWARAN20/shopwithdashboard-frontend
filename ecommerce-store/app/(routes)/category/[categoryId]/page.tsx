@@ -16,27 +16,23 @@ interface CategoryPageProps {
           categoryId: string;
      };
      searchParams: {
-          colorId: string;
-          sizeId: string;
+          colorId?: string; // Make optional as it may not always be present
+          sizeId?: string;  // Make optional as it may not always be present
      };
-     product: Product;
 }
 
 const CategoryPage = async ({ params, searchParams }: CategoryPageProps) => {
      let products, sizes, colors, category;
-     const concurrencyparams = await params;
-     const concurrencysearchParams = await searchParams;
      try {
-          // Use Promise.all to fetch all data concurrently
           [products, sizes, colors, category] = await Promise.all([
                getProducts({
-                    categoryId: concurrencyparams.categoryId,
-                    colorId: concurrencysearchParams.colorId,
-                    sizeId: concurrencysearchParams.sizeId,
+                    categoryId: params.categoryId,
+                    colorId: searchParams.colorId,
+                    sizeId: searchParams.sizeId,
                }),
                getSizes(),
                getColors(),
-               getCategory(concurrencyparams.categoryId),
+               getCategory(params.categoryId),
           ]);
      } catch (err: unknown) {
           console.error("Failed to fetch data:", err);
