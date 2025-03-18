@@ -10,20 +10,17 @@ interface CartStore {
      addItem: (data: Product) => void;
      removeItem: (id: string) => void;
      removeAll: () => void;
-     sizeId?: string; // Store sizeId from search params
+     sizeId?: string;
+     setSizeId: (sizeId: string | undefined) => void; // ✅ Add setter function
 }
 
-const useCart = create<CartStore>()(
-     persist(
+const useCart = create(
+     persist<CartStore>(
           (set, get) => ({
                items: [],
-               sizeId: undefined,
-
                addItem: (data: Product) => {
                     const currentItems = get().items;
-                    const existingItem = currentItems.find((item) => item.id === data.id);
-
-                    if (existingItem) {
+                    if (currentItems.some((item) => item.id === data.id)) {
                          toast("Item already in cart.");
                          return;
                     }
@@ -31,33 +28,37 @@ const useCart = create<CartStore>()(
                     set({ items: [...currentItems, data] });
                     toast.success("Item added to cart.");
                },
-
                removeItem: (id: string) => {
-                    set((state) => ({
-                         items: state.items.filter((item) => item.id !== id),
-                    }));
+                    set({ items: get().items.filter((item) => item.id !== id) });
                     toast.success("Item removed from cart.");
                },
-
                removeAll: () => set({ items: [] }),
+               sizeId: undefined, // ✅ Default state
+               setSizeId: (sizeId) => set({ sizeId }), // ✅ Setter function for sizeId
           }),
           {
                name: "cart-storage",
-               storage: typeof window !== "undefined" ? createJSONStorage(() => localStorage) : undefined,
+               storage: createJSONStorage(() =>
+                    typeof window !== "undefined"
+                         ? localStorage
+                         : {
+                              getItem: () => null, // ✅ Dummy storage for SSR
+                              setItem: () => { }, // ✅ Avoids SSR errors
+                              removeItem: () => { },
+                         }
+               ), // ✅ Fix localStorage issue in SSR
           }
      )
 );
 
-// Hook to sync sizeId from searchParams into Zustand store
+// ✅ Hook to sync sizeId from searchParams into Zustand store
 export const useSyncSizeId = () => {
      const searchParams = useSearchParams();
      const sizeId = searchParams.get("sizeId");
-     const setSizeId = useCart((state) => state.sizeId);
+     const setSizeId = useCart((state) => state.setSizeId); // ✅ Get setter function from Zustand
 
      useEffect(() => {
-          if (sizeId && sizeId !== setSizeId) {
-               useCart.setState({ sizeId });
-          }
+          setSizeId(sizeId || undefined); // ✅ Update Zustand store safely
      }, [sizeId, setSizeId]);
 };
 
