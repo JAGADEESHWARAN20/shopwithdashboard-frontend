@@ -12,9 +12,7 @@ import MobileFilters from "../components/mobile-filter";
 export const revalidate = 0;
 
 interface CategoryPageProps {
-     params: {
-          categoryId: string;
-     };
+     params: any,
      searchParams: {
           colorId?: string; // Make optional as it may not always be present
           sizeId?: string;  // Make optional as it may not always be present
