@@ -7,6 +7,7 @@ import { Toaster } from 'react-hot-toast';
 import ModalProvider from "@/providers/modal-providers";
 import ToastProvider from "@/providers/toast-provider";
 import Script from "next/script";
+import { StoreProvider } from "@/providers/store-provider";
 
 const font = Urbanist({ subsets: ['latin'] })
 
