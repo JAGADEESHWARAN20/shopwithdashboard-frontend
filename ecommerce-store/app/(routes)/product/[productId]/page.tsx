@@ -21,22 +21,30 @@ const ProductPage = async ({ params }: ProductPageProps) => {
      return (
           <div className="bg-white">
                <Container>
-                    <div className="px-4 py-10 sm:px-6 lg:px-8">
+                    <div className="py-10">
                          <div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
-                              {/* Mobile view */}
-                              <MobileGallery images={product.images.map((img) => img.url)} />
-                              {/* Large device view */}
+                              {/* Mobile view - only visible on small screens */}
+                              <div className="block lg:hidden w-full">
+                                   <MobileGallery images={product.images.map((img) => img.url)} />
+                              </div>
+
+                              {/* Desktop view - only visible on large screens */}
                               <div className="hidden lg:block">
                                    <Gallery images={product.images} />
                               </div>
 
-                              <div className="mt-10 px-4 sm:mt-16 sm:px-0 lg:mt-0">
-                                   {/* info */}
+                              {/* Product information - full width on mobile, half on desktop */}
+                              <div className="mt-10 sm:mt-16 lg:mt-0">
                                    <Info data={product} />
                               </div>
                          </div>
-                         <br className="my-10" />
-                         <ProductList title="Related Products" items={suggestedProducts} />
+
+                         <hr className="my-10" />
+
+                         {/* Related products section */}
+                         <div className="mt-10">
+                              <ProductList title="Related Products" items={suggestedProducts} />
+                         </div>
                     </div>
                </Container>
           </div>

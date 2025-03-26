@@ -2,11 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-.nextjs-static-indicator-toast-icon{
+.nextjs-static-indicator-toast-icon {
   display: none;
 }
 
-.nextjs-static-indicator-toast-text{
+.nextjs-static-indicator-toast-text {
   display: none;
 }
 
@@ -36,8 +36,9 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.5rem
+    --radius: 0.5rem;
   }
+
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
@@ -62,15 +63,37 @@
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%
+    --chart-5: 340 75% 55%;
   }
 }
+
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground min-h-screen;
+  }
+
+  img {
+    @apply max-w-full h-auto;
+  }
+
+  /* Fix for image aspect ratio issues */
+  .aspect-square>span {
+    position: unset !important;
+  }
+
+  .aspect-square img {
+    object-fit: contain;
+    width: 100% !important;
+    position: relative !important;
+    height: 100% !important;
   }
 }
 
+/* Mobile carousel navigation buttons */
+.carousel-button {
+  @apply absolute top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md z-10;
+}

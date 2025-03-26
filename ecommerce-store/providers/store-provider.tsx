@@ -1,20 +1,34 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { Store } from "@prisma/client";
+import toast from "react-hot-toast";
 
+// Define a store type
+type Store = {
+     id: string;
+     name: string;
+     userId: string;
+     storeUrl?: string;
+     isActive: boolean;
+     createdAt: string;
+     updatedAt: string;
+};
+
+// Define the store context shape
 interface StoreContextType {
      store: Store | null;
      isLoading: boolean;
      error: string | null;
 }
 
+// Create the store context with default values
 const StoreContext = createContext<StoreContextType>({
      store: null,
      isLoading: true,
      error: null,
 });
 
+// Custom hook for accessing store context
 export const useStore = () => {
      const context = useContext(StoreContext);
      if (!context) {
@@ -31,14 +45,30 @@ export const StoreProvider = ({ children }: { children: React.ReactNode }) => {
      useEffect(() => {
           const fetchStore = async () => {
                try {
+                    console.log("Fetching store data...");
                     const response = await fetch("/api/store");
                     if (!response.ok) {
-                         throw new Error("Failed to fetch store data");
+                         throw new Error(`Failed to fetch store data: ${response.status}`);
                     }
+
                     const data = await response.json();
+                    console.log("Store data received:", data);
+
                     setStore(data);
+
+                    // Show toast for development environment
+                    if (process.env.NODE_ENV === 'development') {
+                         toast.success(`Store loaded: ${data.name}`);
+                    }
                } catch (err) {
-                    setError(err instanceof Error ? err.message : "An error occurred");
+                    console.error("Error fetching store:", err);
+                    const errorMessage = err instanceof Error ? err.message : "Failed to load store";
+                    setError(errorMessage);
+
+                    // Only show toast in development
+                    if (process.env.NODE_ENV === 'development') {
+                         toast.error(`Store error: ${errorMessage}`);
+                    }
                } finally {
                     setIsLoading(false);
                }

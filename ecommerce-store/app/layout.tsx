@@ -7,12 +7,14 @@ import { Toaster } from 'react-hot-toast';
 import ModalProvider from "@/providers/modal-providers";
 import ToastProvider from "@/providers/toast-provider";
 import Script from "next/script";
+import { StoreProvider } from "@/providers/store-provider";
 
 const font = Urbanist({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: "Store",
-  description: "Store",
+  title: "E-Commerce Store",
+  description: "Your one-stop shop for all your needs",
+  keywords: "ecommerce, shopping, online store",
 };
 
 export default function RootLayout({
@@ -29,12 +31,18 @@ export default function RootLayout({
         />
       </head>
       <body className={font.className}>
-        <ModalProvider />
-        <ToastProvider />
-        <Navbar />
-        <Toaster />
-        {children}
-        <Footer />
+        <StoreProvider>
+          <ModalProvider />
+          <ToastProvider />
+          <Navbar />
+          <Toaster position="top-center" />
+          <div className="flex min-h-screen flex-col">
+            <div className="flex-grow">
+              {children}
+            </div>
+            <Footer />
+          </div>
+        </StoreProvider>
       </body>
     </html>
   );
