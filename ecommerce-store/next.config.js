@@ -16,7 +16,16 @@ const nextConfig = {
                          { key: "Access-Control-Allow-Methods", value: "GET,DELETE,PATCH,POST,PUT" },
                          { key: "Access-Control-Allow-Headers", value: "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" },
                     ]
-               }
+               },
+               {
+                    source: '/:path*',
+                    headers: [
+                         {
+                              key: 'Cache-Control',
+                              value: 'public, max-age=31536000, immutable',
+                         },
+                    ],
+               },
           ];
      },
      images: {
@@ -28,6 +37,10 @@ const nextConfig = {
                     pathname: '**',
                },
           ],
+          deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+          imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+          formats: ['image/webp'],
+          minimumCacheTTL: 60,
      },
      async rewrites() {
           return [
@@ -44,10 +57,22 @@ const nextConfig = {
      reactStrictMode: true,
      experimental: {
           optimizeFonts: true,
+          optimizeImages: true,
+          scrollRestoration: true,
      },
      // Production build optimizations
      compiler: {
           removeConsole: process.env.NODE_ENV === 'production',
+     },
+     // Redirect from root to store
+     async redirects() {
+          return [
+               {
+                    source: '/',
+                    destination: '/store',
+                    permanent: true,
+               },
+          ];
      },
 };
 
