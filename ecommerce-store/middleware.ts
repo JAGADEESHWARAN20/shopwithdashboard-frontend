@@ -8,9 +8,14 @@ const publicPaths = ['/api', '/_next', '/static', '/favicon.ico'];
 const STORE_DOMAIN = process.env.NEXT_PUBLIC_STORE_DOMAIN || 'ecommercestore-online.vercel.app';
 
 // Default store to use when the main domain is accessed
-const DEFAULT_STORE = 'default';
+const DEFAULT_STORE = process.env.NEXT_PUBLIC_DEFAULT_STORE || 'default';
 
 export async function middleware(request: NextRequest) {
+     // Static generation or build-time detection - skip middleware completely
+     if (process.env.NEXT_PHASE === 'phase-production-build') {
+          return NextResponse.next();
+     }
+
      const { pathname, host } = request.nextUrl;
 
      // Skip middleware for public paths
