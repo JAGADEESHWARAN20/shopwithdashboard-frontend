@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import prismadb from "@/lib/prismadb";
 import { getStoreUrl } from "@/lib/utils";
 
+// Force dynamic rendering to avoid static generation errors with headers
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: Request) {
      try {
           // Get store ID from request headers (set by middleware)
@@ -21,6 +24,21 @@ export async function GET(req: Request) {
                     name: storeName || 'Test Store',
                     userId: 'dev-user-id',
                     storeUrl: headerStoreUrl || getStoreUrl(storeName || 'Test Store'),
+                    isActive: true,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+               });
+          }
+
+          // Handle default store for the main domain
+          if (storeId === 'default-store-id') {
+               console.log("Using default store data for main domain");
+
+               return NextResponse.json({
+                    id: 'default-store-id',
+                    name: 'E-Commerce Store',
+                    userId: 'default-user-id',
+                    storeUrl: headerStoreUrl || process.env.NEXT_PUBLIC_STORE_URL || `https://${process.env.NEXT_PUBLIC_STORE_DOMAIN}`,
                     isActive: true,
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString()

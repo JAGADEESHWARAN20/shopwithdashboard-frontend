@@ -1,13 +1,17 @@
+export interface Category {
+     id: string;
+     name: string;
+     storeId: string;
+     billboard?: Billboard;
+     billboardId?: string;
+     createdAt?: string;
+     updatedAt?: string;
+}
+
 export interface Billboard {
      id: string;
      label: string;
      imageUrl: string;
-}
-
-export interface Category {
-     id: string;
-     name: string;
-     billboard: Billboard;
 }
 
 export interface Product {

@@ -7,6 +7,9 @@ const publicPaths = ['/api', '/_next', '/static', '/favicon.ico'];
 // Base domain for store URLs
 const STORE_DOMAIN = process.env.NEXT_PUBLIC_STORE_DOMAIN || 'ecommercestore-online.vercel.app';
 
+// Default store to use when the main domain is accessed
+const DEFAULT_STORE = 'default';
+
 export async function middleware(request: NextRequest) {
      const { pathname, host } = request.nextUrl;
 
@@ -40,11 +43,13 @@ export async function middleware(request: NextRequest) {
 
           if (host.includes('.vercel.app')) {
                // For Vercel domains
-               subdomain = host.split('.')[0];
-
-               // If it's the main domain, redirect to a default store or landing page
                if (host === STORE_DOMAIN) {
-                    return NextResponse.redirect(new URL('/', request.url));
+                    // Main domain - use default store instead of redirecting
+                    console.log('Main domain detected, using default store');
+                    subdomain = DEFAULT_STORE;
+               } else {
+                    // Extract subdomain for regular store domain
+                    subdomain = host.split('.')[0];
                }
           } else {
                // For custom domains
@@ -89,7 +94,24 @@ export async function middleware(request: NextRequest) {
 
           if (!response.ok) {
                console.warn(`Store validation failed for subdomain: ${subdomain}`);
-               return NextResponse.redirect(new URL('/', request.url));
+
+               // If this is already the default store, don't redirect to avoid loops
+               if (subdomain === DEFAULT_STORE) {
+                    // Create a fallback headers object
+                    const requestHeaders = new Headers(request.headers);
+                    requestHeaders.set('x-store-id', 'default-store-id');
+                    requestHeaders.set('x-store-name', 'Default Store');
+                    requestHeaders.set('x-store-url', storeUrl);
+
+                    return NextResponse.next({
+                         request: {
+                              headers: requestHeaders,
+                         }
+                    });
+               }
+
+               // Redirect to the default store
+               return NextResponse.redirect(new URL('/', `https://${DEFAULT_STORE}.${STORE_DOMAIN}`));
           }
 
           const store = await response.json();
