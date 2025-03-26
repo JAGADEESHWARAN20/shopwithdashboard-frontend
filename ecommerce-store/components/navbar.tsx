@@ -32,16 +32,14 @@ const Navbar = () => {
                }
 
                const data = await response.json();
+               // Only show categories that exist in the database
                setCategories(data);
           } catch (err) {
                console.error('Error fetching categories:', err);
                setError(err instanceof Error ? err.message : 'Error loading categories');
 
-               // Use default categories as fallback
-               setCategories([
-                    { id: "fallback-1", name: "Home", storeId: "fallback" },
-                    { id: "fallback-2", name: "Products", storeId: "fallback" },
-               ]);
+               // Use fallback empty categories - don't show anything that doesn't exist
+               setCategories([]);
           } finally {
                setIsLoading(false);
           }
@@ -86,7 +84,7 @@ const Navbar = () => {
                                    Retry
                               </button>
                          )}
-                         <MainNav data={categories} />
+                         {categories.length > 0 && <MainNav data={categories} />}
                          <NavBarActions />
                     </div>
                </Container>

@@ -62,12 +62,14 @@ export const StoreProvider = ({ children }: { children: React.ReactNode }) => {
                setError(null);
                console.log("Fetching store data...");
 
-               const response = await fetch("/api/store", {
+               // Add a timestamp to prevent caching
+               const response = await fetch(`/api/store?t=${Date.now()}`, {
                     // Add cache control to prevent stale responses
                     cache: "no-cache",
                     headers: {
-                         'Cache-Control': 'no-cache',
-                         'Pragma': 'no-cache'
+                         'Cache-Control': 'no-cache, no-store, must-revalidate',
+                         'Pragma': 'no-cache',
+                         'Expires': '0'
                     }
                });
 
@@ -87,9 +89,24 @@ export const StoreProvider = ({ children }: { children: React.ReactNode }) => {
                const data = await response.json();
                console.log("Store data received:", data);
 
+               // Validate the store data
+               if (!data.name) {
+                    console.warn("Store data is missing name, using default");
+                    setStore(DEFAULT_STORE);
+                    return;
+               }
+
                setStore(data);
 
-               // Show toast for development environment
+               // Save to sessionStorage for faster loading on subsequent page views
+               try {
+                    sessionStorage.setItem('store_data', JSON.stringify(data));
+                    sessionStorage.setItem('store_timestamp', Date.now().toString());
+               } catch (e) {
+                    console.warn("Failed to save store data to sessionStorage", e);
+               }
+
+               // Only show toast in development
                if (process.env.NODE_ENV === 'development') {
                     toast.success(`Store loaded: ${data.name}`);
                }
@@ -97,6 +114,18 @@ export const StoreProvider = ({ children }: { children: React.ReactNode }) => {
                console.error("Error fetching store:", err);
                const errorMessage = err instanceof Error ? err.message : "Failed to load store";
                setError(errorMessage);
+
+               // Try to use cached data from sessionStorage
+               try {
+                    const cachedData = sessionStorage.getItem('store_data');
+                    if (cachedData) {
+                         console.log("Using cached store data");
+                         setStore(JSON.parse(cachedData));
+                         return;
+                    }
+               } catch (e) {
+                    console.warn("Failed to retrieve cached store data", e);
+               }
 
                // Use default store as fallback after multiple retries
                if (retryCount >= 2) {
@@ -119,6 +148,27 @@ export const StoreProvider = ({ children }: { children: React.ReactNode }) => {
      };
 
      useEffect(() => {
+          // Check if we have recent cached data first (less than 5 minutes old)
+          try {
+               const cachedData = sessionStorage.getItem('store_data');
+               const timestamp = sessionStorage.getItem('store_timestamp');
+
+               if (cachedData && timestamp) {
+                    const age = Date.now() - parseInt(timestamp);
+                    if (age < 5 * 60 * 1000) { // 5 minutes
+                         console.log("Using recent cached store data");
+                         setStore(JSON.parse(cachedData));
+                         setIsLoading(false);
+                         // Still fetch in background for latest data
+                         fetchStore().catch(console.error);
+                         return;
+                    }
+               }
+          } catch (e) {
+               console.warn("Failed to use cached store data", e);
+          }
+
+          // No valid cache, fetch fresh data
           fetchStore();
           // eslint-disable-next-line react-hooks/exhaustive-deps
      }, []);
