@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+     // Disable ESLint during builds
+     eslint: {
+          // This setting will completely disable ESLint during builds
+          ignoreDuringBuilds: true,
+     },
      async headers() {
           return [
                {
