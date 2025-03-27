@@ -3,11 +3,18 @@ export interface Billboard {
      label: string;
      imageUrl: string;
 }
-
 export interface Category {
      id: string;
      name: string;
-     billboard: Billboard;
+     billboardId: string;
+     storeId: string;
+}
+
+export interface Store {
+     id: string;
+     name: string;
+     storeUrl?: string;
+     userId: string;
 }
 
 export interface Product {
