@@ -9,6 +9,7 @@ import Filter from "@/app/(routes)/category/components/filter";
 import NoResults from "@/components/ui/no-results";
 import ProductCard from "@/components/ui/product-card";
 import MobileFilters from "../components/mobile-filter";
+import getBillboard from "@/actions/get-billboards"; // Import getBillboard action
 
 export const revalidate = 0;
 
@@ -33,10 +34,13 @@ const CategoryPage = async ({ params, searchParams }: Props) => {
           getCategory(categoryId),
      ]);
 
+     // Fetch billboard using billboardId
+     const billboard = category?.billboardId ? await getBillboard(category.billboardId) : null;
+
      return (
           <div className="bg-white">
                <Container>
-                    {category ? <Billboard data={category.billboard} /> : <p>Category not found</p>}
+                    {billboard ? <Billboard data={billboard} /> : <p>Category not found</p>}
                     <div className="px-4 sm:px-6 lg:px-8 pb-24">
                          <div className="lg:grid lg:grid-cols-5 lg:gap-x-5">
                               <MobileFilters sizes={sizes} colors={colors} />

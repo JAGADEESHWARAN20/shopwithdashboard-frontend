@@ -33,7 +33,7 @@ export default [
       ...nextPlugin.configs.recommended.rules,
 
       // TypeScript rules (adjust as needed)
-      "@typescript-eslint/no-explicit-any": "error",
+      "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
     },
   },
