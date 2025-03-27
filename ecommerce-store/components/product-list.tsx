@@ -9,15 +9,16 @@ interface ProductListProps {
 
 const ProductList: React.FC<ProductListProps> = ({ title, items }) => {
      return (
-          <div className="space-y-6">
-               <h3 className="font-bold text-2xl md:text-3xl">{title}</h3>
+          <div className="space-y-4">
+               <h3 className="font-semibold text-3xl">{title}</h3>
                {items.length === 0 && <NoResults />}
-               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {items.map((item) => (
                          <ProductCard key={item.id} data={item} />
                     ))}
                </div>
           </div>
+
      )
 }
 

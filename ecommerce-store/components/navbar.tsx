@@ -1,95 +1,39 @@
-"use client";
-
 import Link from 'next/link'
-import { useEffect, useState } from 'react';
 import Container from "@/components/ui/container";
 import MainNav from "@/components/main-nav"
 import NavBarActions from "@/components/navbar-actions"
-import { Category } from "@/types";
-import { useStore } from '@/providers/store-provider';
-import { RefreshCw } from 'lucide-react';
 
-const Navbar = () => {
-     const [categories, setCategories] = useState<Category[]>([]);
-     const [isLoading, setIsLoading] = useState(true);
-     const [error, setError] = useState<string | null>(null);
-     const { store, isLoading: storeLoading, error: storeError, retryFetch } = useStore();
+import getCategories from '@/actions/get-categories';
 
-     const fetchCategories = async () => {
-          try {
-               setIsLoading(true);
-               setError(null);
-               const response = await fetch('/api/categories', {
-                    cache: "no-cache",
-                    headers: {
-                         'Cache-Control': 'no-cache',
-                         'Pragma': 'no-cache'
-                    }
-               });
 
-               if (!response.ok) {
-                    throw new Error(`Failed to fetch categories: ${response.status}`);
-               }
 
-               const data = await response.json();
-               // Only show categories that exist in the database
-               setCategories(data);
-          } catch (err) {
-               console.error('Error fetching categories:', err);
-               setError(err instanceof Error ? err.message : 'Error loading categories');
+const Navbar = async () => {
+     try {
+          const categories = await getCategories();
 
-               // Use fallback empty categories - don't show anything that doesn't exist
-               setCategories([]);
-          } finally {
-               setIsLoading(false);
+          if (!categories) {
+               return null;
           }
-     };
 
-     useEffect(() => {
-          fetchCategories();
-     }, []);
-
-     const handleRetry = () => {
-          retryFetch();
-          fetchCategories();
-     };
-
-     if (isLoading || storeLoading) {
           return (
-               <div className="border-b">
-                    <Container>
-                         <div className='relative px-4 sm:px-4 lg:px-8 flex h-16 items-center'>
-                              <p className='text-3xl font-bold'>Loading...</p>
-                         </div>
-                    </Container>
-               </div>
-          );
-     }
-
-     const hasError = error || storeError;
-
-     return (
-          <div className="border-b">
-               <Container>
-                    <div className='relative px-4 sm:px-4 lg:px-8 flex h-16 items-center'>
-                         <Link href={'/'} className="ml-2 sm:ml-2 lg:ml-4 lg:mx-0 flex gap-x-2">
-                              <p className='text-3xl font-bold'>{store?.name || 'Store'}</p>
-                         </Link>
-                         {hasError && (
-                              <button
-                                   onClick={handleRetry}
-                                   className="ml-4 text-sm flex items-center text-red-500 hover:text-red-700"
-                              >
-                                   <RefreshCw className="h-4 w-4 mr-1" />
-                                   Retry
-                              </button>
-                         )}
-                         {categories.length > 0 && <MainNav data={categories} />}
-                         <NavBarActions />
+               <>
+                    <div className="border-b">
+                         <Container>
+                              <div className='relative px-4 sm:px-4 lg:px-8 flex h-16 items-center'>
+                                   <Link href={'/'} className="ml-2 sm:ml-2 lg:ml-4 lg:mx-0 flex gap-x-2">
+                                        <p className='text-3xl font-bold'>Store</p>
+                                   </Link>
+                                   <MainNav data={categories} />
+                                   <NavBarActions />
+                              </div>
+                         </Container>
                     </div>
-               </Container>
-          </div>
-     );
+               </>
+          );
+     } catch (error) {
+          console.error('Error in Navbar:', error);
+          return null;
+     }
 };
 
 export default Navbar;

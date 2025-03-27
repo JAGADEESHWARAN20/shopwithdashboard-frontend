@@ -36,7 +36,7 @@ const CategoryPage = async ({ params, searchParams }: Props) => {
      return (
           <div className="bg-white">
                <Container>
-                    {category && category.billboard ? <Billboard data={category.billboard} /> : <p>Category not found</p>}
+                    {category ? <Billboard data={category.billboard} /> : <p>Category not found</p>}
                     <div className="px-4 sm:px-6 lg:px-8 pb-24">
                          <div className="lg:grid lg:grid-cols-5 lg:gap-x-5">
                               <MobileFilters sizes={sizes} colors={colors} />
