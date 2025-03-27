@@ -8,11 +8,19 @@ import MainNav from "@/components/main-nav";
 import NavBarActions from "@/components/navbar-actions";
 import axios from "axios";
 
+// Define type for Category
+export interface Category {
+     id: string;
+     name: string;
+     billboardId: string;
+     storeId: string;
+}
+
 const Navbar = () => {
      const params = useParams();
      const storeId = (params?.storeId as string) || process.env.NEXT_PUBLIC_STORE_ID || "";
      const [storeName, setStoreName] = useState<string>("Store"); // Default to "Store"
-     const [categories, setCategories] = useState<any[]>([]); // Adjust type based on your Category interface
+     const [categories, setCategories] = useState<Category[]>([]); // Use Category type
      const [isMounted, setIsMounted] = useState(false);
 
      useEffect(() => {
@@ -32,7 +40,7 @@ const Navbar = () => {
                          setStoreName("Store"); // Fallback
                     });
 
-               // Fetch categories (assuming a similar endpoint exists)
+               // Fetch categories
                axios
                     .get(`/api/stores/${storeId}/categories`)
                     .then((response) => {
