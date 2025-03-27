@@ -42,14 +42,6 @@ const nextConfig = {
           formats: ['image/webp'],
           minimumCacheTTL: 60,
      },
-     async rewrites() {
-          return [
-               {
-                    source: '/api/:path*',
-                    destination: `${process.env.NEXT_PUBLIC_API_URL}/api/:path*`,
-               },
-          ];
-     },
      // Performance optimizations
      swcMinify: true,
      compress: true,
