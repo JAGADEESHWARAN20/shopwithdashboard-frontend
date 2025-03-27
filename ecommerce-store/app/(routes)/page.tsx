@@ -16,7 +16,7 @@ export interface Billboard {
 
 interface HomePageProps {
      products: Product[];
-     billboard: Billboard;
+     billboard: Billboard | null; // Allow billboard to be null
 }
 
 const Page: React.FC<HomePageProps> = ({ products, billboard }) => {
@@ -54,7 +54,7 @@ const Page: React.FC<HomePageProps> = ({ products, billboard }) => {
      return (
           <Container>
                <div className="space-y-10 pb-10">
-                    <Billboard data={billboard} />
+                    {billboard && <Billboard data={billboard} />} {/* Conditionally render Billboard */}
                     <div className="flex flex-col gap-y-8 px-4 sm:px-6 lg:px-8">
                          <ProductList title="Featured Products" items={products} />
                     </div>
