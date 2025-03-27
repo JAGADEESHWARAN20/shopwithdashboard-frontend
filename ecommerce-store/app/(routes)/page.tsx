@@ -14,12 +14,12 @@ export interface Billboard {
      imageUrl: string;
 }
 
-interface HomePageClientProps {
+interface HomePageProps {
      products: Product[];
      billboard: Billboard;
 }
 
-const HomePage: React.FC<HomePageClientProps> = ({ products, billboard }) => {
+const Page: React.FC<HomePageProps> = ({ products, billboard }) => {
      const pathname = usePathname(); // Get the current pathname
 
      useEffect(() => {
@@ -63,4 +63,4 @@ const HomePage: React.FC<HomePageClientProps> = ({ products, billboard }) => {
      );
 };
 
-export default HomePage;
+export default Page;
