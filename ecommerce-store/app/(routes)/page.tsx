@@ -1,66 +1,76 @@
 // app/(routes)/page.tsx
-"use client"
+"use client";
 
 import React, { useEffect, useState } from 'react';
-import { getBillboard, getRandomBillboardId } from '@/actions/get-billboards';
+import  getFeaturedBillboard  from '@/actions/get-featured-billboard';
 import { getStoreName } from '@/actions/get-storename';
-import { Billboard } from '@/types';
-import axios from 'axios';
+import { Billboard as BillboardType } from '@/types'; // Import Billboard type
+import Billboard from '@/components/billboard';
+import ProductList from '@/components/product-list';
+import { Product } from '@/types'; // Import Product type
+import { getStoreId } from '@/utils/storeId'; // Import getStoreId
 
-const HomePage = () => {
-     const [billboard, setBillboard] = useState<Billboard | null>(null);
-     const [storeInfo, setStoreInfo] = useState<{ title: string; description: string } | null>(null);
-     const [storeId, setStoreId] = useState<string | null>(null);
+interface HomePageProps {
+     products: Product[];
+}
+
+const HomePage: React.FC<HomePageProps> = ({ products }) => {
+     const [billboard, setBillboard] = useState<BillboardType | null>(null);
+     const [storeInfo, setStoreInfo] = useState<{ storeId: string; storeName: string } | null>(null);
+     const [loading, setLoading] = useState(true);
+     const [error, setError] = useState<string | null>(null);
 
      useEffect(() => {
-          const fetchStoreId = async () => {
+          const fetchData = async () => {
+               setLoading(true);
+               setError(null);
+
                try {
-                    const response = await axios.get('/api/stores');
-                    if (response.data && response.data.length > 0) {
-                         setStoreId(response.data[0].id);
+                    const storeId = getStoreId();
+
+                    if (!storeId) {
+                         setError("Store ID not found.");
+                         return;
                     }
-               } catch (error) {
-                    console.error("Error fetching storeId:", error);
+
+                    const storeData = await getStoreName(storeId);
+
+                    if (!storeData) {
+                         setError("Store information not found.");
+                         return;
+                    }
+
+                    setStoreInfo(storeData);
+
+                    const fetchedBillboard = await getFeaturedBillboard(storeId);
+                    setBillboard(fetchedBillboard);
+               } catch (err) {
+                    setError("Failed to fetch data.");
+                    console.error("Error fetching data:", err);
+               } finally {
+                    setLoading(false);
                }
           };
 
-          fetchStoreId();
+          fetchData();
      }, []);
 
-     useEffect(() => {
-          if (storeId) {
-               const fetchBillboard = async () => {
-                    const randomId = await getRandomBillboardId();
-                    if (randomId) {
-                         const fetchedBillboard = await getBillboard(randomId);
-                         setBillboard(fetchedBillboard);
-                    }
-               };
-
-               const fetchStoreName = async () => {
-                    const fetchedStoreInfo = await getStoreName(storeId);
-                    setStoreInfo(fetchedStoreInfo);
-               };
-
-               fetchBillboard();
-               fetchStoreName();
-          }
-     }, [storeId]);
-
-     if (!billboard || !storeInfo) {
+     if (loading) {
           return <div>Loading...</div>;
+     }
+
+     if (error) {
+          return <div>Error: {error}</div>;
+     }
+
+     if (!storeInfo) {
+          return <div>Store information not available.</div>;
      }
 
      return (
           <div>
-               <h1>{storeInfo.title}</h1>
-               <p>{storeInfo.description}</p>
-               {billboard && (
-                    <div>
-                         <h2>{billboard.label}</h2>
-                         <img src={billboard.imageUrl} alt="Billboard" />
-                    </div>
-               )}
+               {billboard && <Billboard data={billboard} />}
+               <ProductList title="Featured Products" items={products} />
           </div>
      );
 };

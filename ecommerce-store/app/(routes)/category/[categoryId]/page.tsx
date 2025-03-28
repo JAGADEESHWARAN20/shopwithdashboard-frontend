@@ -9,7 +9,8 @@ import Filter from "@/app/(routes)/category/components/filter";
 import NoResults from "@/components/ui/no-results";
 import ProductCard from "@/components/ui/product-card";
 import MobileFilters from "../components/mobile-filter";
-import { getBillboard } from "@/actions/get-billboards"; // Import getBillboard action
+import { getBillboard } from "@/actions/get-billboards";
+import { getStoreId } from "@/utils/storeId";
 
 export const revalidate = 0;
 
@@ -23,19 +24,25 @@ const CategoryPage = async ({ params, searchParams }: Props) => {
 
      if (!categoryId) return notFound();
 
+     const storeId = getStoreId();
+
+     if (!storeId) {
+          return <div>Store ID not found.</div>;
+     }
+
      const searchParamsResolved = searchParams ? await searchParams : {};
      const colorId = typeof searchParamsResolved.colorId === "string" ? searchParamsResolved.colorId : undefined;
      const sizeId = typeof searchParamsResolved.sizeId === "string" ? searchParamsResolved.sizeId : undefined;
 
      const [products, sizes, colors, category] = await Promise.all([
-          getProducts({ categoryId, colorId, sizeId }),
+          getProducts({ storeId, categoryId, colorId, sizeId }),
           getSizes(),
           getColors(),
-          getCategory(categoryId),
+          getCategory(storeId, categoryId),
      ]);
 
      // Fetch billboard using billboardId
-     const billboard = category?.billboardId ? await getBillboard(category.billboardId) : null;
+     const billboard = category?.billboardId ? await getBillboard(storeId, category.billboardId) : null; // Corrected call
 
      return (
           <div className="bg-white">
@@ -49,9 +56,7 @@ const CategoryPage = async ({ params, searchParams }: Props) => {
                                    <Filter data={colors} valueKey="colorId" name="Colors" />
                               </div>
                               <div className="mt-6 lg:col-span-4 lg:mt-0">
-                                   {products.length === 0 ? (
-                                        <NoResults />
-                                   ) : (
+                                   {products.length === 0 ? <NoResults /> : (
                                         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                                              {products.map((product) => (
                                                   <ProductCard key={product.id} data={product} />

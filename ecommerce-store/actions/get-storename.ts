@@ -1,14 +1,22 @@
-const STORE_URL = `${process.env.NEXT_PUBLIC_API_URL}/storename`;
+// actions/get-storename.ts
 
-export const getStoreName = async (storeId: string): Promise<{ title: string; description: string } | null> => {
+const STORE_URL = `${process.env.NEXT_PUBLIC_API_URL}`;
+
+interface StoreName {
+  storeId: string;
+  storeUrl: string;
+  storeName: string; // Add storeName to the interface
+}
+
+export const getStoreName = async (storeId: string): Promise<StoreName | null> => {
   try {
-    const res = await fetch(`${STORE_URL}/${storeId}`);
-    if (!res.ok) {  
-      throw new Error(`Failed to fetch store name: ${res.status}`);
+    const res = await fetch(`${STORE_URL}/stores/${storeId}`); // Make sure to use the correct API endpoint
+    if (!res.ok) {
+      throw new Error(`Failed to fetch store info: ${res.status}`);
     }
     return res.json();
   } catch (error) {
-    console.error("Error getting store name:", error);
+    console.error("Error getting store info:", error);
     return null;
   }
 };

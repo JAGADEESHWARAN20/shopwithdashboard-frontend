@@ -1,27 +1,46 @@
 import { Billboard } from "@/types";
 
-const URL = `${process.env.NEXT_PUBLIC_API_URL}/billboards`;
+export const getBillboard = async (storeId: string, id: string): Promise<Billboard> => {
+     try {
+          if (!process.env.NEXT_PUBLIC_API_URL) {
+               throw new Error("NEXT_PUBLIC_API_URL environment variable is not defined.");
+          }
 
-export const getBillboard = async (id: string): Promise<Billboard> => {
-     const res = await fetch(`${URL}/${id}`);
-     if (!res.ok) {
-          throw new Error(`Failed to fetch billboard: ${res.status}`);
+          const URL = `${process.env.NEXT_PUBLIC_API_URL}/api/stores/${storeId}/billboards/${id}`;
+          const res = await fetch(URL);
+
+          if (!res.ok) {
+               throw new Error(`Failed to fetch billboard: ${res.status}`);
+          }
+
+          return res.json();
+     } catch (error) {
+          console.error("Error getting billboard:", error);
+          throw error;
      }
-     return res.json();
 };
 
-export const getRandomBillboardId = async (): Promise<string | null> => {
+export const getRandomBillboardId = async (storeId: string): Promise<string | null> => {
      try {
-          const res = await fetch(`${URL}/ids`); // Assuming you have an endpoint to get all billboard IDs
+          if (!process.env.NEXT_PUBLIC_API_URL) {
+               throw new Error("NEXT_PUBLIC_API_URL environment variable is not defined.");
+          }
+
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/stores/${storeId}/billboards`);
+
           if (!res.ok) {
                throw new Error(`Failed to fetch billboard IDs: ${res.status}`);
           }
-          const ids: string[] = await res.json();
-          if (ids && ids.length > 0) {
+
+          const billboards: Billboard[] = await res.json();
+
+          if (billboards && billboards.length > 0) {
+               const ids: string[] = billboards.map((billboard) => billboard.id);
                const randomIndex = Math.floor(Math.random() * ids.length);
                return ids[randomIndex];
           }
-          return null; // Return null if there are no billboard IDs
+
+          return null;
      } catch (error) {
           console.error("Error getting random billboard ID:", error);
           return null;

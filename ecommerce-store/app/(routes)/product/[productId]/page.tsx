@@ -5,6 +5,7 @@ import ProductList from "@/components/product-list";
 import Gallery from "@/components/gallery";
 import Info from "@/components/info";
 import { MobileGallery } from "@/components/gallery/mobile-gallery";
+import { getStoreId } from "@/utils/storeId";
 
 interface ProductPageProps {
      params: Promise<{ productId: string }>;
@@ -13,8 +14,15 @@ interface ProductPageProps {
 const ProductPage = async ({ params }: ProductPageProps) => {
      const { productId } = await params;
 
-     const product = await getProduct(productId);
+     const storeId = getStoreId();
+
+     if (!storeId) {
+          return <div>Store ID not found.</div>;
+     }
+
+     const product = await getProduct(storeId, productId); // Corrected call
      const suggestedProducts = await getProducts({
+          storeId,
           categoryId: product?.category?.id,
      });
 
@@ -23,15 +31,11 @@ const ProductPage = async ({ params }: ProductPageProps) => {
                <Container>
                     <div className="px-4 py-10 sm:px-6 lg:px-8">
                          <div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
-                              {/* Mobile view */}
                               <MobileGallery images={product.images.map((img) => img.url)} />
-                              {/* Large device view */}
                               <div className="hidden lg:block">
                                    <Gallery images={product.images} />
                               </div>
-
                               <div className="mt-10 px-4 sm:mt-16 sm:px-0 lg:mt-0">
-                                   {/* info */}
                                    <Info data={product} />
                               </div>
                          </div>
