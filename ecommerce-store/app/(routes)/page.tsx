@@ -2,23 +2,20 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import  getFeaturedBillboard  from '@/actions/get-featured-billboard';
+import getFeaturedBillboard from '@/actions/get-featured-billboard';
 import { getStoreName } from '@/actions/get-storename';
-import { Billboard as BillboardType } from '@/types'; // Import Billboard type
+import { Billboard as BillboardType } from '@/types';
 import Billboard from '@/components/billboard';
 import ProductList from '@/components/product-list';
-import { Product } from '@/types'; // Import Product type
-import { getStoreId } from '@/utils/storeId'; // Import getStoreId
+import { Product } from '@/types';
+import { getStoreId } from '@/utils/storeId';
 
-interface HomePageProps {
-     products: Product[];
-}
-
-const HomePage: React.FC<HomePageProps> = ({ products }) => {
+const HomePage: React.FC = () => { //Remove the HomePageProps
      const [billboard, setBillboard] = useState<BillboardType | null>(null);
      const [storeInfo, setStoreInfo] = useState<{ storeId: string; storeName: string } | null>(null);
      const [loading, setLoading] = useState(true);
      const [error, setError] = useState<string | null>(null);
+     const [products, setProducts] = useState<Product[]>([]); //Add a products state variable.
 
      useEffect(() => {
           const fetchData = async () => {
@@ -44,6 +41,13 @@ const HomePage: React.FC<HomePageProps> = ({ products }) => {
 
                     const fetchedBillboard = await getFeaturedBillboard(storeId);
                     setBillboard(fetchedBillboard);
+
+                    // Fetch the products here.
+                    //You will need to create an action to get the products for the home page.
+                    //Example:
+                    //const fetchedProducts = await getProducts(storeId);
+                    //setProducts(fetchedProducts);
+
                } catch (err) {
                     setError("Failed to fetch data.");
                     console.error("Error fetching data:", err);
