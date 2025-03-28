@@ -9,7 +9,7 @@ import Filter from "@/app/(routes)/category/components/filter";
 import NoResults from "@/components/ui/no-results";
 import ProductCard from "@/components/ui/product-card";
 import MobileFilters from "../components/mobile-filter";
-import getBillboard from "@/actions/get-billboards"; // Import getBillboard action
+import { getBillboard } from "@/actions/get-billboards"; // Import getBillboard action
 
 export const revalidate = 0;
 
