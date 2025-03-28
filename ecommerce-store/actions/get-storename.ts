@@ -1,28 +1,14 @@
-"use client";
+const STORE_URL = `${process.env.NEXT_PUBLIC_API_URL}/storename`;
 
-import { Store } from "@/types";
-
-const getStoreName = async (storeId: string): Promise<string | null> => {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/stores/${storeId}`;
-
+export const getStoreName = async (storeId: string): Promise<{ title: string; description: string } | null> => {
   try {
-    const res = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!res.ok) {
-      throw new Error(`Failed to fetch store: ${res.status} ${res.statusText}`);
+    const res = await fetch(`${STORE_URL}/${storeId}`);
+    if (!res.ok) {  
+      throw new Error(`Failed to fetch store name: ${res.status}`);
     }
-
-    const store: Store = await res.json();
-    return store?.name || null;
+    return res.json();
   } catch (error) {
-    console.error("[GET_STORE_NAME]", error);
+    console.error("Error getting store name:", error);
     return null;
   }
 };
-
-export default getStoreName;
