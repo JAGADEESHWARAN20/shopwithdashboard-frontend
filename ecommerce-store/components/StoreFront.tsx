@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 interface Store {
      id: string;
      name: string;
-     storeUrl: string;
+     storeUrl: string;   
      alternateUrls: string[];
      isActive: boolean;
 }

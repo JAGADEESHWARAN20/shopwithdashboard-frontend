@@ -1,4 +1,3 @@
-// app/(routes)/page.tsx
 "use client";
 
 import React, { useEffect, useState } from 'react';
@@ -9,13 +8,14 @@ import Billboard from '@/components/billboard';
 import ProductList from '@/components/product-list';
 import { Product } from '@/types';
 import { getStoreId } from '@/utils/storeId';
+import getProducts from "@/actions/get-products";
 
-const HomePage: React.FC = () => { //Remove the HomePageProps
+const HomePage: React.FC = () => {
      const [billboard, setBillboard] = useState<BillboardType | null>(null);
      const [storeInfo, setStoreInfo] = useState<{ storeId: string; storeName: string } | null>(null);
      const [loading, setLoading] = useState(true);
      const [error, setError] = useState<string | null>(null);
-     const [products, setProducts] = useState<Product[]>([]); //Add a products state variable.
+     const [products, setProducts] = useState<Product[]>([]);
 
      useEffect(() => {
           const fetchData = async () => {
@@ -43,10 +43,9 @@ const HomePage: React.FC = () => { //Remove the HomePageProps
                     setBillboard(fetchedBillboard);
 
                     // Fetch the products here.
-                    //You will need to create an action to get the products for the home page.
-                    //Example:
-                    //const fetchedProducts = await getProducts(storeId);
-                    //setProducts(fetchedProducts);
+                    const fetchedProducts = await getProducts({ storeId: storeId }); // Pass storeId as an object
+
+                    setProducts(fetchedProducts);
 
                } catch (err) {
                     setError("Failed to fetch data.");
