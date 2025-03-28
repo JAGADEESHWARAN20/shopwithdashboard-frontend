@@ -1,4 +1,5 @@
 // app/(routes)/page.tsx
+"use client"
 
 import React, { useEffect, useState } from 'react';
 import { getBillboard, getRandomBillboardId } from '@/actions/get-billboards';
