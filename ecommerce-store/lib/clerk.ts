@@ -1,9 +1,13 @@
-// lib/clerk.ts
-import { users } from "@clerk/backend"; // Correct import
+import { createClerkClient } from "@clerk/backend";
+
+
+const clerkClient = createClerkClient({
+     secretKey: process.env.CLERK_SECRET_KEY,
+});
 
 export async function getUserById(userId: string) {
      try {
-          const user = await users.getUser(userId);
+          const user = await clerkClient.users.getUser(userId);
           return user;
      } catch (error) {
           console.error("Error getting user:", error);
@@ -13,7 +17,7 @@ export async function getUserById(userId: string) {
 
 export async function getStoreIdForUser(userId: string) {
      try {
-          const user = await users.getUser(userId);
+          const user = await clerkClient.users.getUser(userId);
           return user.publicMetadata?.storeId as string | undefined;
      } catch (error) {
           console.error("Error getting store ID:", error);
@@ -23,7 +27,7 @@ export async function getStoreIdForUser(userId: string) {
 
 export async function setStoreIdForUser(userId: string, storeId: string) {
      try {
-          await users.updateUserMetadata(userId, {
+          await clerkClient.users.updateUserMetadata(userId, {
                publicMetadata: { storeId: storeId },
           });
           console.log(`Store ID ${storeId} set for user ${userId}`);
