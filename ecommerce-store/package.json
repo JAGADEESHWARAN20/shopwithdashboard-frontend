@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@clerk/backend": "^1.25.8",
-    "@clerk/nextjs": "^6.12.12",
     "@headlessui/react": "^2.2.0",
     "@prisma/client": "^6.5.0",
     "@radix-ui/react-slot": "^1.1.2",
@@ -31,6 +30,7 @@
     "zustand": "^5.0.3"
   },
   "devDependencies": {
+    "@clerk/nextjs": "^6.12.12",
     "@eslint/eslintrc": "^3",
     "@types/node": "^20",
     "@types/react": "^19.0.12",

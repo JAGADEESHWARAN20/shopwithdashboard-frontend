@@ -11,7 +11,7 @@ export interface Product {
      price: number;
      isFeatured: boolean;
      isArchived: boolean;
-     images:  Image[];
+     images: Image[];
      category: { id: string; name: string };
      size: { id: string; name: string; value: string };
      color: { id: string; name: string; value: string };
