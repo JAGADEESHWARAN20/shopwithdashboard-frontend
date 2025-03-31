@@ -23,13 +23,13 @@ const HomePage: React.FC = () => {
                setError(null);
 
                try {
+                    
                     const storeId = getStoreId();
 
                     if (!storeId) {
                          setError("Store ID not found.");
                          return;
                     }
-
                     const storeData = await getStoreName(storeId);
 
                     if (!storeData) {
