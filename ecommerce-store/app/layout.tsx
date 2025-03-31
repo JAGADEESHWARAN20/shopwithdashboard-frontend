@@ -7,6 +7,8 @@ import { Toaster } from "react-hot-toast";
 import ModalProvider from "@/providers/modal-providers";
 import ToastProvider from "@/providers/toast-provider";
 import Script from "next/script";
+import { ClerkProvider } from "@clerk/nextjs";
+import { ReactNode } from "react";
 
 const font = Urbanist({ subsets: ["latin"] });
 
@@ -15,7 +17,12 @@ export const metadata: Metadata = {
   description: "Store",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+interface EcommerceStoreProps {
+  children: ReactNode;
+  pageProps?: any;
+}
+
+export default function RootLayout({ children, pageProps }: EcommerceStoreProps) {
   return (
     <html lang="en">
       <head>
@@ -26,7 +33,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ToastProvider />
         <Navbar /> {/* Static Navbar */}
         <Toaster />
-        {children}
+        <ClerkProvider
+          afterSignOutUrl={'/'}
+          publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+          fallbackRedirectUrl="/dashboard" // Changed from signInFallbackRedirectUrl
+          {...pageProps}
+        >
+          {children}
+         
+        </ClerkProvider>
+        
         <Footer />
       </body>
     </html>

@@ -5,7 +5,7 @@ import getProducts from "@/actions/get-products";
 import getSizes from "@/actions/get-sizes";
 import Billboard from "@/components/billboard";
 import Container from "@/components/ui/container";
-import Filter from "@/app/(home)/(routes)/category/components/filter";
+import Filter from "@/app/(root)/(routes)/category/components/filter";
 import NoResults from "@/components/ui/no-results";
 import ProductCard from "@/components/ui/product-card";
 import MobileFilters from "../components/mobile-filter";
