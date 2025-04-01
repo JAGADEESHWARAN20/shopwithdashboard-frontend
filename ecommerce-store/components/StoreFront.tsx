@@ -1,3 +1,4 @@
+// components/StoreFront.tsx
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -60,7 +61,7 @@ const StoreFront: React.FC<StoreFrontProps> = ({ initialStore }) => {
                     ws.current.close();
                }
           };
-     }, [store.id]);
+     }, [store.id, connectWebSocket]); // Add connectWebSocket to dependencies
 
      useEffect(() => {
           setStore(initialStore);
@@ -72,7 +73,11 @@ const StoreFront: React.FC<StoreFrontProps> = ({ initialStore }) => {
                <p className="text-lg">This is your e-commerce store at {store.storeUrl}</p>
                <div id="websocket-status" className="mt-4">
                     <span
-                         className={`w-4 h-4 rounded-full mr-2 inline-block ${wsStatus === "Connected" ? "bg-green-500" : wsStatus === "Connecting" ? "bg-yellow-500" : "bg-red-500"
+                         className={`w-4 h-4 rounded-full mr-2 inline-block ${wsStatus === "Connected"
+                                   ? "bg-green-500"
+                                   : wsStatus === "Connecting"
+                                        ? "bg-yellow-500"
+                                        : "bg-red-500"
                               }`}
                     ></span>
                     <span>WebSocket {wsStatus}</span>

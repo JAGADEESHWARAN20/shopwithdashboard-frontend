@@ -1,4 +1,9 @@
 // lib/websocket-client.ts
+export interface WebSocketMessage {
+     type: string;
+     data: Record<string, unknown>; // Adjust based on your WebSocket message structure
+}
+
 export class WebSocketClient {
      private socket: WebSocket | null = null;
      private url: string;
@@ -23,16 +28,16 @@ export class WebSocketClient {
           };
      }
 
-     onMessage(callback: (data: any) => void) {
+     onMessage(callback: (data: WebSocketMessage) => void) {
           if (this.socket) {
                this.socket.onmessage = (event) => {
-                    const data = JSON.parse(event.data);
+                    const data: WebSocketMessage = JSON.parse(event.data);
                     callback(data);
                };
           }
      }
 
-     sendMessage(message: any) {
+     sendMessage(message: WebSocketMessage) {
           if (this.socket && this.socket.readyState === WebSocket.OPEN) {
                this.socket.send(JSON.stringify(message));
           }

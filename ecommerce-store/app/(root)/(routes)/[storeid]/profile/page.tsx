@@ -1,15 +1,17 @@
-"use client"
 // app/(root)/(routes)/[storeId]/profile/page.tsx
+"use client";
+
 import { useUser } from "@clerk/nextjs";
 import { useEffect, useState, useRef } from "react";
 import { getProfile } from "@/actions/user/get-profile";
-import { UserProfile } from "@/types"; // Import centralized type
+import { UserProfile } from "@/types";
 
 interface ProfilePageProps {
      params: { storeId: string };
 }
 
-const ProfilePage = ({ params }: ProfilePageProps) => {
+// Make the page async to align with Next.js App Router expectations
+export default async function ProfilePage({ params }: ProfilePageProps) {
      const { storeId } = params;
      const { user, isLoaded } = useUser();
      const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -18,7 +20,6 @@ const ProfilePage = ({ params }: ProfilePageProps) => {
      const [error, setError] = useState<string | null>(null);
      const ws = useRef<WebSocket | null>(null);
 
-     // Fetch user profile and set up WebSocket
      useEffect(() => {
           const fetchUserProfile = async () => {
                if (!user || !isLoaded) return;
@@ -54,7 +55,7 @@ const ProfilePage = ({ params }: ProfilePageProps) => {
                          if (type === "userUpdate" && data.userId === user.id) {
                               setWsMessage("Profile updated successfully");
                               if (data.storeId) {
-                                   // Update storeId if needed (though not used in this page)
+                                   // Update storeId if needed
                               }
                               fetchUserProfile();
                          }
@@ -105,10 +106,10 @@ const ProfilePage = ({ params }: ProfilePageProps) => {
                <div id="websocket-status" className="mt-4">
                     <span
                          className={`w-4 h-4 rounded-full mr-2 inline-block ${wsStatus === "Connected"
-                                   ? "bg-green-500"
-                                   : wsStatus === "Connecting"
-                                        ? "bg-yellow-500"
-                                        : "bg-red-500"
+                              ? "bg-green-500"
+                              : wsStatus === "Connecting"
+                                   ? "bg-yellow-500"
+                                   : "bg-red-500"
                               }`}
                     ></span>
                     <span>WebSocket {wsStatus}</span>
@@ -120,6 +121,4 @@ const ProfilePage = ({ params }: ProfilePageProps) => {
                )}
           </div>
      );
-};
-
-export default ProfilePage;
+}
