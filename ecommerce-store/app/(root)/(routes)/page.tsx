@@ -10,12 +10,11 @@ import { Billboard as BillboardType, Product } from "@/types";
 const HomePage = async () => {
      try {
           // Step 1: Determine the current domain
-          // Use NEXT_PUBLIC_VERCEL_URL for Vercel deployments, fallback to localhost for development
           const domain = process.env.NEXT_PUBLIC_VERCEL_URL || "http://localhost:3000";
 
           // Step 2: Fetch store data (including storeId) using getStoreName
           const storeData = await getStoreName(domain);
-          if (!storeData || !storeData.storeId) {
+          if (!storeData || !storeData.id) {  // Changed from storeData.storeId to storeData.id
                return (
                     <Container>
                          <div className="px-4 py-10 sm:px-6 lg:px-8">
@@ -25,7 +24,7 @@ const HomePage = async () => {
                );
           }
 
-          const storeId = storeData.storeId;
+          const storeId = storeData.id; // Fix: Use storeData.id
 
           // Step 3: Fetch billboard and products using the storeId
           const billboard = await getFeaturedBillboard(storeId);
@@ -56,5 +55,4 @@ const HomePage = async () => {
           );
      }
 };
-
 export default HomePage;

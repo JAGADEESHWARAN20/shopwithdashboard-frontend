@@ -8,7 +8,7 @@ import MainNav from "@/components/main-nav";
 import NavBarActions from "@/components/navbar-actions";
 import { getStoreName } from "@/actions/stores/get-storename";
 import axios from "axios";
-import { Category, Store } from "@/types"; // Import types from @/types
+import { Category, StoreName } from "@/types"; // Ensure correct type import
 
 const Navbar = () => {
      const params = useParams(); // Get storeId from the URL
@@ -33,19 +33,20 @@ const Navbar = () => {
                     if (!currentStoreId) {
                          // If no storeId in URL, fetch from getStoreName()
                          const domain = window.location.href;
-                         const storeData: Store | null = await getStoreName(domain);
+                         const storeData: StoreName | null = await getStoreName(domain);
 
-                         if (storeData?.id) {
+                         if (storeData && storeData.id) {
                               currentStoreId = storeData.id;
+                              setStoreId(currentStoreId);
+                              setStoreName(storeData.name || "Store");
                               router.push(`/store/${currentStoreId}`); // Redirect to store URL
                          } else {
                               console.error("[NAVBAR_STORE_ID_ERROR] Store ID not found");
                               return;
                          }
+                    } else {
+                         setStoreId(currentStoreId);
                     }
-
-                    setStoreId(currentStoreId);
-                    setStoreName(storeData?.name || "Store");
                } catch (error) {
                     console.error("[NAVBAR_STORE_NAME_ERROR]", error);
                     setStoreName("Store");

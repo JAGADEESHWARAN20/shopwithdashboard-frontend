@@ -60,6 +60,15 @@ export interface UserProfile {
      role: "ADMIN" | "CUSTOMER";
 }
 
+export interface StoreName {
+     id: string;
+     name: string;
+     userId: string;
+     storeUrl?: string;
+}
+
+
+
 // export interface Product {
 //      id: string;
 //      category: Category;

@@ -4,9 +4,10 @@ import { extractStoreName } from "@/utils/extract-domain";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 interface StoreName {
-  storeId: string;
-  storeUrl: string;
-  storeName: string;
+  id: string;
+  name: string;
+  userId: string;
+  storeUrl?: string; // Optional field
 }
 
 interface StoreIdResponse {
@@ -50,12 +51,19 @@ const getStoreDetails = async (storeId: string): Promise<StoreName | null> => {
       throw new Error(`Failed to fetch store info: ${res.status}`);
     }
 
-    return res.json();
+    const data = await res.json();
+    return {
+      id: data.id, // Ensure 'id' is properly mapped
+      name: data.name,
+      userId: data.userId,
+      storeUrl: data.storeUrl || undefined,
+    };
   } catch (error) {
     console.error("[ERROR] Error getting store info:", error);
     return null;
   }
 };
+
 
 export const getStoreName = async (url: string): Promise<StoreName | null> => {
   try {
