@@ -39,7 +39,7 @@ const Navbar = () => {
                               currentStoreId = storeData.id;
                               setStoreId(currentStoreId);
                               setStoreName(storeData.name || "Store");
-                              router.push(`/store/${currentStoreId}`); // Redirect to store URL
+                              router.push(`/`); // Redirect to store URL
                          } else {
                               console.error("[NAVBAR_STORE_ID_ERROR] Store ID not found");
                               return;
