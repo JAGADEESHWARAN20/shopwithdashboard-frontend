@@ -28,6 +28,7 @@ const getStoreIdByName = async (name: string): Promise<string | null> => {
     }
 
     const data: StoreIdResponse = await res.json();
+    console.log(data)
     return data.storeId;
   } catch (error) {
     console.error("Error fetching store ID:", error);
