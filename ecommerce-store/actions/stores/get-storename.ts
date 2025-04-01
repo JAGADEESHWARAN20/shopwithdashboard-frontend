@@ -1,5 +1,5 @@
-// actions/stores/get-storename.ts (in the frontend project: kajol-ecommercestore-online.vercel.app)
-import { extractSubdomainOrDomain } from "@/utils/extract-domain";
+// actions/stores/get-storename.ts
+import { extractStoreName } from "@/utils/extract-domain";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
@@ -15,15 +15,16 @@ interface StoreIdResponse {
 
 const getStoreIdByName = async (name: string): Promise<string | null> => {
   try {
-    // Use a GET request with the name as a query parameter
-    const res = await fetch(`${API_URL}api/stores/get-id-by-name?name=kajol`, {
+    const url = `${API_URL}/api/stores/get-id-by-name?name=${encodeURIComponent(name)}`;
+    console.log("[FETCH_DEBUG] GET request to:", url);
+
+    const res = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
     });
 
-    console.log("[FETCH_DEBUG] GET request to:", `${API_URL}/api/stores/get-id-by-name?name=${encodeURIComponent(name)}`);
     console.log("[FETCH_DEBUG] Response status:", res.status);
 
     if (!res.ok) {
@@ -34,27 +35,31 @@ const getStoreIdByName = async (name: string): Promise<string | null> => {
     console.log("[FETCH_DEBUG] Response data:", data);
     return data.storeId;
   } catch (error) {
-    console.error("Error fetching store ID:", error);
+    console.error("[ERROR] Error fetching store ID:", error);
     return null;
   }
 };
 
 const getStoreDetails = async (storeId: string): Promise<StoreName | null> => {
   try {
-    const res = await fetch(`${API_URL}/api/stores/${storeId}`);
+    const url = `${API_URL}/api/stores/${storeId}`;
+    console.log("[FETCH_DEBUG] Fetching store details from:", url);
+
+    const res = await fetch(url);
     if (!res.ok) {
       throw new Error(`Failed to fetch store info: ${res.status}`);
     }
+
     return res.json();
   } catch (error) {
-    console.error("Error getting store info:", error);
+    console.error("[ERROR] Error getting store info:", error);
     return null;
   }
 };
 
 export const getStoreName = async (url: string): Promise<StoreName | null> => {
   try {
-    const name = extractSubdomainOrDomain(url);
+    const name = extractStoreName(url);
     console.log("[FETCH_DEBUG] Extracted name:", name);
     if (!name) {
       throw new Error("Invalid URL: Could not extract name");
@@ -72,7 +77,7 @@ export const getStoreName = async (url: string): Promise<StoreName | null> => {
 
     return storeDetails;
   } catch (error) {
-    console.error("Error in getStoreName:", error);
+    console.error("[ERROR] in getStoreName:", error);
     return null;
   }
 };

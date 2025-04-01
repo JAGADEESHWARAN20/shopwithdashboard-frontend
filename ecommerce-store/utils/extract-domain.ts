@@ -1,15 +1,28 @@
 // utils/extract-domain.ts
-export const extractSubdomainOrDomain = (url: string): string => {
-     let domain = ''; // Declare domain outside the try block
+export const extractStoreName = (url: string): string | null => {
      try {
-          domain = url.replace(/^https?:\/\//, ''); // Assign value to domain
-          const parts = domain.split('.');
-          if (parts.length > 2) {
-               return parts[0]; // Return subdomain (e.g., "kajol" from "kajol-ecommercestore-online.vercel.app")
+          const parsedUrl = new URL(url);
+          const host = parsedUrl.hostname; // Extract hostname
+          const parts = host.split(".");
+
+          switch (parts.length) {
+               case 2:
+                    // Case: `ecommercestore-online.vercel.app`
+                    return "ecommercestore";
+               case 3:
+                    // Case: `kajol-ecommercestore-online.vercel.app`
+                    if (parts[0].includes("-")) {
+                         return parts[0].split("-")[0]; // Extract "kajol" from "kajol-ecommercestore"
+                    }
+                    return parts[0]; // Extract "kajol" from "kajol.ecommercestore"
+               case 4:
+                    // Case: `kajol.ecommercestore-online.vercel.app`
+                    return parts[0];
+               default:
+                    return null;
           }
-          return domain; // Return full domain if no subdomain (e.g., "ecommercestore-online.vercel.app")
      } catch (error) {
-          console.error("Error extracting subdomain or domain:", error);
-          return domain || url; // Fallback to the original URL if domain is empty
+          console.error("[ERROR] extractStoreName:", error);
+          return null;
      }
 };
