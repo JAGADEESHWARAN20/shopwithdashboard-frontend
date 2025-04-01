@@ -33,8 +33,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <ClerkProvider
           afterSignOutUrl="/"
           publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
-          signInFallbackRedirectUrl="/dashboard"
-          signUpFallbackRedirectUrl="/dashboard"
+          signInFallbackRedirectUrl="/"
+          signUpFallbackRedirectUrl="/"
         >
           <AuthProvider>
             <ModalProvider />

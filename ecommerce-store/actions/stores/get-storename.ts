@@ -51,6 +51,7 @@ const getStoreDetails = async (storeId: string): Promise<StoreName | null> => {
 export const getStoreName = async (url: string): Promise<StoreName | null> => {
   try {
     const name = extractSubdomainOrDomain(url);
+    console.log(name)
     if (!name) {
       throw new Error("Invalid URL: Could not extract name");
     }
