@@ -15,7 +15,7 @@ interface StoreIdResponse {
 
 const getStoreIdByName = async (name: string): Promise<string | null> => {
   try {
-    const res = await fetch(`${API_URL}/api/stores/get-id-by-name`, {
+    const res = await fetch(`${API_URL}api/stores/get-id-by-name`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
