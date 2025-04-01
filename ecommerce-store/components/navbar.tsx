@@ -1,11 +1,12 @@
+// components/navbar.tsx
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import Container from "@/components/ui/container";
 import MainNav from "@/components/main-nav";
 import NavBarActions from "@/components/navbar-actions";
+import { getStoreName } from "@/actions/stores/get-storename";
 import axios from "axios";
 
 // Define type for Category
@@ -17,8 +18,7 @@ export interface Category {
 }
 
 const Navbar = () => {
-     const params = useParams();
-     const storeId = (params?.storeId as string) || process.env.NEXT_PUBLIC_STORE_ID || "";
+     const [storeId, setStoreId] = useState<string | null>(null);
      const [storeName, setStoreName] = useState<string>("Store"); // Default to "Store"
      const [categories, setCategories] = useState<Category[]>([]); // Use Category type
      const [isMounted, setIsMounted] = useState(false);
@@ -28,27 +28,42 @@ const Navbar = () => {
      }, []);
 
      useEffect(() => {
-          if (storeId && isMounted) {
-               // Fetch store name
-               axios
-                    .get(`/api/stores/${storeId}/get-storename`)
-                    .then((response) => {
-                         setStoreName(response.data || "Store");
-                    })
-                    .catch((error) => {
-                         console.error("[NAVBAR_STORE_NAME_ERROR]", error);
-                         setStoreName("Store"); // Fallback
-                    });
+          if (!isMounted) return;
 
-               // Fetch categories
-               axios
-                    .get(`/api/stores/${storeId}/categories`)
-                    .then((response) => {
-                         console.log("[NAVBAR_CATEGORIES]", response.data);
-                         setCategories(response.data || []);
-                    })
-                    .catch((error) => console.error("[NAVBAR_CATEGORIES_ERROR]", error));
-          }
+          const fetchStoreData = async () => {
+               try {
+                    // Step 1: Get the current domain
+                    const domain = window.location.href; // e.g., "https://kajol-ecommercestore-online.vercel.app"
+
+                    // Step 2: Fetch store data (including storeId) using getStoreName
+                    const storeData = await getStoreName(domain);
+                    if (!storeData || !storeData.storeId) {
+                         console.error("[NAVBAR_STORE_ID_ERROR]", "Store ID not found");
+                         return;
+                    }
+
+                    setStoreId(storeData.storeId);
+                    setStoreName(storeData.storeName || "Store");
+               } catch (error) {
+                    console.error("[NAVBAR_STORE_NAME_ERROR]", error);
+                    setStoreName("Store"); // Fallback
+               }
+          };
+
+          fetchStoreData();
+     }, [isMounted]);
+
+     useEffect(() => {
+          if (!storeId || !isMounted) return;
+
+          // Fetch categories using the storeId
+          axios
+               .get(`/api/stores/${storeId}/categories`)
+               .then((response) => {
+                    console.log("[NAVBAR_CATEGORIES]", response.data);
+                    setCategories(response.data || []);
+               })
+               .catch((error) => console.error("[NAVBAR_CATEGORIES_ERROR]", error));
      }, [storeId, isMounted]);
 
      if (!isMounted) {
