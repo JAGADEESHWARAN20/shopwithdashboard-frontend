@@ -16,7 +16,7 @@ interface StoreIdResponse {
 const getStoreIdByName = async (name: string): Promise<string | null> => {
   try {
     // Use a GET request with the name as a query parameter
-    const res = await fetch(`${API_URL}/api/stores/get-id-by-name?name='kajol'`, {
+    const res = await fetch(`${API_URL}/api/stores/get-id-by-name`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
