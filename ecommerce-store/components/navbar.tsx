@@ -1,26 +1,22 @@
-// components/navbar.tsx
 "use client";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
 import Container from "@/components/ui/container";
 import MainNav from "@/components/main-nav";
 import NavBarActions from "@/components/navbar-actions";
 import { getStoreName } from "@/actions/stores/get-storename";
 import axios from "axios";
-
-// Define type for Category
-export interface Category {
-     id: string;
-     name: string;
-     billboardId: string;
-     storeId: string;
-}
+import { Category, Store } from "@/types"; // Import types from @/types
 
 const Navbar = () => {
+     const params = useParams(); // Get storeId from the URL
+     const router = useRouter();
+
      const [storeId, setStoreId] = useState<string | null>(null);
-     const [storeName, setStoreName] = useState<string>("Store"); // Default to "Store"
-     const [categories, setCategories] = useState<Category[]>([]); // Use Category type
+     const [storeName, setStoreName] = useState<string>("Store");
+     const [categories, setCategories] = useState<Category[]>([]);
      const [isMounted, setIsMounted] = useState(false);
 
      useEffect(() => {
@@ -32,35 +28,39 @@ const Navbar = () => {
 
           const fetchStoreData = async () => {
                try {
-                    // Step 1: Get the current domain
-                    const domain = window.location.href; // e.g., "https://kajol-ecommercestore-online.vercel.app"
+                    let currentStoreId = params?.storeId as string | undefined;
 
-                    // Step 2: Fetch store data (including storeId) using getStoreName
-                    const storeData = await getStoreName(domain);
-                    if (!storeData || !storeData.storeId) {
-                         console.error("[NAVBAR_STORE_ID_ERROR]", "Store ID not found");
-                         return;
+                    if (!currentStoreId) {
+                         // If no storeId in URL, fetch from getStoreName()
+                         const domain = window.location.href;
+                         const storeData: Store | null = await getStoreName(domain);
+
+                         if (storeData?.id) {
+                              currentStoreId = storeData.id;
+                              router.push(`/store/${currentStoreId}`); // Redirect to store URL
+                         } else {
+                              console.error("[NAVBAR_STORE_ID_ERROR] Store ID not found");
+                              return;
+                         }
                     }
 
-                    setStoreId(storeData.storeId);
-                    setStoreName(storeData.storeName || "Store");
+                    setStoreId(currentStoreId);
+                    setStoreName(storeData?.name || "Store");
                } catch (error) {
                     console.error("[NAVBAR_STORE_NAME_ERROR]", error);
-                    setStoreName("Store"); // Fallback
+                    setStoreName("Store");
                }
           };
 
           fetchStoreData();
-     }, [isMounted]);
+     }, [params?.storeId, isMounted]);
 
      useEffect(() => {
           if (!storeId || !isMounted) return;
 
-          // Fetch categories using the storeId
           axios
                .get(`/api/stores/${storeId}/categories`)
                .then((response) => {
-                    console.log("[NAVBAR_CATEGORIES]", response.data);
                     setCategories(response.data || []);
                })
                .catch((error) => console.error("[NAVBAR_CATEGORIES_ERROR]", error));
@@ -86,7 +86,7 @@ const Navbar = () => {
           <div className="border-b">
                <Container>
                     <div className="relative px-4 sm:px-4 lg:px-8 flex h-16 items-center">
-                         <Link href="/" className="ml-2 sm:ml-2 lg:ml-4 lg:mx-0 flex gap-x-2">
+                         <Link href={`/store/${storeId}`} className="ml-2 sm:ml-2 lg:ml-4 lg:mx-0 flex gap-x-2">
                               <p className="text-3xl font-bold">{storeName}</p>
                          </Link>
                          <MainNav data={categories} />
