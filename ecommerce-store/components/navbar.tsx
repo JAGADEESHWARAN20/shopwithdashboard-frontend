@@ -9,6 +9,7 @@ import NavBarActions from "@/components/navbar-actions";
 import { getStoreName } from "@/actions/stores/get-storename";
 import axios from "axios";
 import { Category, StoreName } from "@/types"; // Ensure correct type import
+import getCategories from "@/actions/stores/get-categories";
 
 const Navbar = () => {
      const params = useParams(); // Get storeId from the URL
@@ -58,13 +59,7 @@ const Navbar = () => {
 
      useEffect(() => {
           if (!storeId || !isMounted) return;
-
-          axios
-               .get(`${process.env.NEXT_PUBLIC_API_URL}/api/${storeId}/categories`)
-               .then((response) => {
-                    setCategories(response.data || []);
-               })
-               .catch((error) => console.error("[NAVBAR_CATEGORIES_ERROR]", error));
+          getCategories(storeId)
      }, [storeId, isMounted]);
 
      if (!isMounted) {
