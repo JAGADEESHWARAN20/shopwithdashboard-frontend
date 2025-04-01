@@ -3,7 +3,7 @@
 import { Category } from "@/types";
 
 const getCategories = async (storeId: string): Promise<Category[]> => {
-     const url = `${process.env.NEXT_PUBLIC_API_URL}/api/stores/${storeId}/categories`;
+     const url = `${process.env.NEXT_PUBLIC_API_URL}/api/${storeId}/categories`;
 
      try {
           const res = await fetch(url, {
