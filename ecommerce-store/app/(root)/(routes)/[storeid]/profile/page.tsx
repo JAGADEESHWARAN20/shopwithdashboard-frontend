@@ -1,3 +1,4 @@
+"use client"
 // app/(root)/(routes)/[storeId]/profile/page.tsx
 import { useUser } from "@clerk/nextjs";
 import { useEffect, useState, useRef } from "react";
