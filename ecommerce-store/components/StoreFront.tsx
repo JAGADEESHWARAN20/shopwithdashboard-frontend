@@ -1,7 +1,7 @@
 // components/StoreFront.tsx
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 interface Store {
      id: string;
@@ -21,7 +21,7 @@ const StoreFront: React.FC<StoreFrontProps> = ({ initialStore }) => {
      const [wsMessage, setWsMessage] = useState<string>("");
      const ws = useRef<WebSocket | null>(null);
 
-     const connectWebSocket = () => {
+     const connectWebSocket = useCallback(() => {
           setWsStatus("Connecting");
           ws.current = new WebSocket("wss://admindashboardecom.vercel.app");
 
@@ -51,7 +51,7 @@ const StoreFront: React.FC<StoreFrontProps> = ({ initialStore }) => {
                console.error("WebSocket error:", error);
                setWsStatus("Disconnected");
           };
-     };
+     }, [store.id]); // Dependency on store.id
 
      useEffect(() => {
           connectWebSocket();
@@ -61,7 +61,7 @@ const StoreFront: React.FC<StoreFrontProps> = ({ initialStore }) => {
                     ws.current.close();
                }
           };
-     }, [store.id, connectWebSocket]); // Add connectWebSocket to dependencies
+     }, [connectWebSocket]); // Depend on memoized connectWebSocket
 
      useEffect(() => {
           setStore(initialStore);
