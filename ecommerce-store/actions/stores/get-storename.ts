@@ -1,4 +1,4 @@
-// actions/store/get-storename.ts
+// actions/stores/get-storename.ts (in the frontend project: kajol-ecommercestore-online.vercel.app)
 import { extractSubdomainOrDomain } from "@/utils/extract-domain";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
@@ -15,20 +15,23 @@ interface StoreIdResponse {
 
 const getStoreIdByName = async (name: string): Promise<string | null> => {
   try {
-    const res = await fetch(`${API_URL}api/stores/get-id-by-name`, {
-      method: "POST",
+    // Use a GET request with the name as a query parameter
+    const res = await fetch(`${API_URL}/api/stores/get-id-by-name?name=${encodeURIComponent(name)}`, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name }),
     });
+
+    console.log("[FETCH_DEBUG] GET request to:", `${API_URL}/api/stores/get-id-by-name?name=${encodeURIComponent(name)}`);
+    console.log("[FETCH_DEBUG] Response status:", res.status);
 
     if (!res.ok) {
       throw new Error(`Failed to fetch store ID: ${res.status}`);
     }
 
     const data: StoreIdResponse = await res.json();
-    console.log(data)
+    console.log("[FETCH_DEBUG] Response data:", data);
     return data.storeId;
   } catch (error) {
     console.error("Error fetching store ID:", error);
@@ -52,7 +55,7 @@ const getStoreDetails = async (storeId: string): Promise<StoreName | null> => {
 export const getStoreName = async (url: string): Promise<StoreName | null> => {
   try {
     const name = extractSubdomainOrDomain(url);
-    console.log(name)
+    console.log("[FETCH_DEBUG] Extracted name:", name);
     if (!name) {
       throw new Error("Invalid URL: Could not extract name");
     }
