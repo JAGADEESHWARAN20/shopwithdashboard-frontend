@@ -2,28 +2,20 @@
 import getFeaturedBillboard from "@/actions/stores/get-featured-billboard";
 import { getStoreName } from "@/actions/stores/get-storename";
 import getProducts from "@/actions/stores/get-products";
-import { getStoreId } from "@/utils/storeId";
 import Billboard from "@/components/billboard";
 import ProductList from "@/components/product-list";
 import Container from "@/components/ui/container";
 import { Billboard as BillboardType, Product } from "@/types";
 
 const HomePage = async () => {
-     const storeId = getStoreId();
-
-     if (!storeId) {
-          return (
-               <Container>
-                    <div className="px-4 py-10 sm:px-6 lg:px-8">
-                         <div className="text-center py-10">Store ID not found.</div>
-                    </div>
-               </Container>
-          );
-     }
-
      try {
-          const storeData = await getStoreName(storeId);
-          if (!storeData) {
+          // Step 1: Determine the current domain
+          // Use NEXT_PUBLIC_VERCEL_URL for Vercel deployments, fallback to localhost for development
+          const domain = process.env.NEXT_PUBLIC_VERCEL_URL || "http://localhost:3000";
+
+          // Step 2: Fetch store data (including storeId) using getStoreName
+          const storeData = await getStoreName(domain);
+          if (!storeData || !storeData.storeId) {
                return (
                     <Container>
                          <div className="px-4 py-10 sm:px-6 lg:px-8">
@@ -33,6 +25,9 @@ const HomePage = async () => {
                );
           }
 
+          const storeId = storeData.storeId;
+
+          // Step 3: Fetch billboard and products using the storeId
           const billboard = await getFeaturedBillboard(storeId);
           const products = await getProducts({ storeId });
 
