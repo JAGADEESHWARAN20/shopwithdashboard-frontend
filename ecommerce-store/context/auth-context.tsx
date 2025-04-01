@@ -1,3 +1,4 @@
+"use client"
 // context/auth-context.tsx
 import { createContext, useContext, useState, useEffect } from "react";
 import { getSession } from "@/actions/auth/get-session";

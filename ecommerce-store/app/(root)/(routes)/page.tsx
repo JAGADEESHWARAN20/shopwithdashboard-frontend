@@ -1,51 +1,65 @@
-// app/layout.tsx
-import "./globals.css";
-import type { Metadata } from "next";
-import { Urbanist } from "next/font/google";
-import Footer from "@/components/footer";
-import Navbar from "@/components/navbar";
-import { Toaster } from "react-hot-toast";
-import ModalProvider from "@/providers/modal-providers";
-import ToastProvider from "@/providers/toast-provider";
-import Script from "next/script";
-import { ClerkProvider } from "@clerk/nextjs";
-import { ReactNode } from "react";
-import { AuthProvider } from "@/context/auth-context"; // Add AuthProvider for custom auth context
+// app/(root)/(routes)/page.tsx
+import getFeaturedBillboard from "@/actions/stores/get-featured-billboard";
+import { getStoreName } from "@/actions/stores/get-storename";
+import getProducts from "@/actions/stores/get-products";
+import { getStoreId } from "@/utils/storeId";
+import Billboard from "@/components/billboard";
+import ProductList from "@/components/product-list";
+import Container from "@/components/ui/container";
+import { Billboard as BillboardType, Product } from "@/types";
 
-const font = Urbanist({ subsets: ["latin"] });
+const HomePage = async () => {
+     const storeId = getStoreId();
 
-export const metadata: Metadata = {
-     title: "Ecommerce Store",
-     description: "Discover a wide range of products at our ecommerce store. Shop now for the best deals!",
+     if (!storeId) {
+          return (
+               <Container>
+                    <div className="px-4 py-10 sm:px-6 lg:px-8">
+                         <div className="text-center py-10">Store ID not found.</div>
+                    </div>
+               </Container>
+          );
+     }
+
+     try {
+          const storeData = await getStoreName(storeId);
+          if (!storeData) {
+               return (
+                    <Container>
+                         <div className="px-4 py-10 sm:px-6 lg:px-8">
+                              <div className="text-center py-10">Store information not found.</div>
+                         </div>
+                    </Container>
+               );
+          }
+
+          const billboard = await getFeaturedBillboard(storeId);
+          const products = await getProducts({ storeId });
+
+          return (
+               <Container>
+                    <div className="px-4 py-10 sm:px-6 lg:px-8">
+                         {billboard ? (
+                              <Billboard data={billboard as BillboardType} />
+                         ) : (
+                              <div className="text-center py-10">No featured billboard available.</div>
+                         )}
+                         <ProductList title="Featured Products" items={products as Product[]} />
+                    </div>
+               </Container>
+          );
+     } catch (error) {
+          console.error("Error fetching data:", error);
+          return (
+               <Container>
+                    <div className="px-4 py-10 sm:px-6 lg:px-8">
+                         <div className="text-center py-10 text-red-500">
+                              Failed to fetch data. Please try again later.
+                         </div>
+                    </div>
+               </Container>
+          );
+     }
 };
 
-interface RootLayoutProps {
-     children: ReactNode;
-}
-
-export default function RootLayout({ children }: RootLayoutProps) {
-     return (
-          <html lang="en">
-               <head>
-                    <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="beforeInteractive" />
-               </head>
-               <body className={font.className}>
-                    <ClerkProvider
-                         afterSignOutUrl="/"
-                         publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
-                         signInFallbackRedirectUrl="/dashboard"
-                         signUpFallbackRedirectUrl="/dashboard"
-                    >
-                         <AuthProvider>
-                              <ModalProvider />
-                              <ToastProvider />
-                              <Navbar />
-                              <Toaster />
-                              {children}
-                              <Footer />
-                         </AuthProvider>
-                    </ClerkProvider>
-               </body>
-          </html>
-     );
-}
+export default HomePage;
