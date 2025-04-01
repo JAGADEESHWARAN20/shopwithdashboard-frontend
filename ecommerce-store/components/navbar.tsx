@@ -60,7 +60,7 @@ const Navbar = () => {
           if (!storeId || !isMounted) return;
 
           axios
-               .get(`/api/stores/${storeId}/categories`)
+               .get(`/api/${storeId}/categories`)
                .then((response) => {
                     setCategories(response.data || []);
                })
