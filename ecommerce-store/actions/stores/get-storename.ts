@@ -15,7 +15,7 @@ interface StoreIdResponse {
 
 const getStoreIdByName = async (name: string): Promise<string | null> => {
   try {
-    const url = `${API_URL}/api/stores/get-id-by-name?name=${encodeURIComponent(name)}`;
+    const url = `${API_URL}api/stores/get-id-by-name?name=${encodeURIComponent(name)}`;
     console.log("[FETCH_DEBUG] GET request to:", url);
 
     const res = await fetch(url, {
@@ -42,7 +42,7 @@ const getStoreIdByName = async (name: string): Promise<string | null> => {
 
 const getStoreDetails = async (storeId: string): Promise<StoreName | null> => {
   try {
-    const url = `${API_URL}/api/stores/${storeId}`;
+    const url = `${API_URL}api/stores/${storeId}`;
     console.log("[FETCH_DEBUG] Fetching store details from:", url);
 
     const res = await fetch(url);
