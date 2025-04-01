@@ -1,81 +1,51 @@
-"use client";
+// app/layout.tsx
+import "./globals.css";
+import type { Metadata } from "next";
+import { Urbanist } from "next/font/google";
+import Footer from "@/components/footer";
+import Navbar from "@/components/navbar";
+import { Toaster } from "react-hot-toast";
+import ModalProvider from "@/providers/modal-providers";
+import ToastProvider from "@/providers/toast-provider";
+import Script from "next/script";
+import { ClerkProvider } from "@clerk/nextjs";
+import { ReactNode } from "react";
+import { AuthProvider } from "@/context/auth-context"; // Add AuthProvider for custom auth context
 
-import React, { useEffect, useState } from 'react';
-import getFeaturedBillboard from '@/actions/get-featured-billboard';
-import { getStoreName } from '@/actions/get-storename';
-import { Billboard as BillboardType } from '@/types';
-import Billboard from '@/components/billboard';
-import ProductList from '@/components/product-list';
-import { Product } from '@/types';
-import { getStoreId } from '@/utils/storeId';
-import getProducts from "@/actions/get-products";
+const font = Urbanist({ subsets: ["latin"] });
 
-const HomePage: React.FC = () => {
-     const [billboard, setBillboard] = useState<BillboardType | null>(null);
-     const [storeInfo, setStoreInfo] = useState<{ storeId: string; storeName: string } | null>(null);
-     const [loading, setLoading] = useState(true);
-     const [error, setError] = useState<string | null>(null);
-     const [products, setProducts] = useState<Product[]>([]);
-
-     useEffect(() => {
-          const fetchData = async () => {
-               setLoading(true);
-               setError(null);
-
-               try {
-                    
-                    const storeId = getStoreId();
-
-                    if (!storeId) {
-                         setError("Store ID not found.");
-                         return;
-                    }
-                    const storeData = await getStoreName(storeId);
-
-                    if (!storeData) {
-                         setError("Store information not found.");
-                         return;
-                    }
-
-                    setStoreInfo(storeData);
-
-                    const fetchedBillboard = await getFeaturedBillboard(storeId);
-                    setBillboard(fetchedBillboard);
-
-                    // Fetch the products here.
-                    const fetchedProducts = await getProducts({ storeId: storeId }); // Pass storeId as an object
-
-                    setProducts(fetchedProducts);
-
-               } catch (err) {
-                    setError("Failed to fetch data.");
-                    console.error("Error fetching data:", err);
-               } finally {
-                    setLoading(false);
-               }
-          };
-
-          fetchData();
-     }, []);
-
-     if (loading) {
-          return <div>Loading...</div>;
-     }
-
-     if (error) {
-          return <div>Error: {error}</div>;
-     }
-
-     if (!storeInfo) {
-          return <div>Store information not available.</div>;
-     }
-
-     return (
-          <div>
-               {billboard && <Billboard data={billboard} />}
-               <ProductList title="Featured Products" items={products} />
-          </div>
-     );
+export const metadata: Metadata = {
+     title: "Ecommerce Store",
+     description: "Discover a wide range of products at our ecommerce store. Shop now for the best deals!",
 };
 
-export default HomePage;
+interface RootLayoutProps {
+     children: ReactNode;
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
+     return (
+          <html lang="en">
+               <head>
+                    <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="beforeInteractive" />
+               </head>
+               <body className={font.className}>
+                    <ClerkProvider
+                         afterSignOutUrl="/"
+                         publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+                         signInFallbackRedirectUrl="/dashboard"
+                         signUpFallbackRedirectUrl="/dashboard"
+                    >
+                         <AuthProvider>
+                              <ModalProvider />
+                              <ToastProvider />
+                              <Navbar />
+                              <Toaster />
+                              {children}
+                              <Footer />
+                         </AuthProvider>
+                    </ClerkProvider>
+               </body>
+          </html>
+     );
+}

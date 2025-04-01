@@ -1,10 +1,12 @@
+// app/(root)/(routes)/cart/page.tsx
 "use client";
 
 import { Suspense } from "react";
 import Container from "@/components/ui/container";
-import useCart from "@/hooks/use-cart";
+import  useCart  from "@/hooks/use-cart"; // Fixed import
 import CartItems from "./components/cart-items";
 import Summary from "./components/summary";
+import { Product } from "@/types";
 
 const CartPage = () => {
      const cart = useCart();
@@ -18,20 +20,18 @@ const CartPage = () => {
                               <div className="lg:col-span-7">
                                    {cart.items.length === 0 && (
                                         <p className="text-neutral-500 lg:col-span-7 text-center">
-                                             No Items Added to cart
+                                             No Items Added to Cart
                                         </p>
                                    )}
-
                                    <ul>
-                                        <Suspense fallback={<p>Loading cart items...</p>}>
-                                             {cart.items.map((item) => (
+                                        <Suspense fallback={<div className="text-center py-4">Loading cart items...</div>}>
+                                             {cart.items.map((item: Product) => (
                                                   <CartItems key={item.id} data={item} />
                                              ))}
                                         </Suspense>
                                    </ul>
                               </div>
-
-                              <Suspense fallback={<p>Loading summary...</p>}>
+                              <Suspense fallback={<div className="text-center py-4">Loading summary...</div>}>
                                    <Summary />
                               </Suspense>
                          </div>

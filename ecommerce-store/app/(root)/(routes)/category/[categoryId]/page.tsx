@@ -1,15 +1,15 @@
 import { notFound } from "next/navigation";
-import getCategory from "@/actions/get-category";
-import getColors from "@/actions/get-colors";
-import getProducts from "@/actions/get-products";
-import getSizes from "@/actions/get-sizes";
+import getCategory from "@/actions/stores/get-category";
+import getColors from "@/actions/stores/get-colors";
+import getProducts from "@/actions/stores/get-products";
+import getSizes from "@/actions/stores/get-sizes";
 import Billboard from "@/components/billboard";
 import Container from "@/components/ui/container";
 import Filter from "@/app/(root)/(routes)/category/components/filter";
 import NoResults from "@/components/ui/no-results";
 import ProductCard from "@/components/ui/product-card";
 import MobileFilters from "../components/mobile-filter";
-import { getBillboard } from "@/actions/get-billboards";
+import { getBillboard } from "@/actions/stores/get-billboards";
 import { getStoreId } from "@/utils/storeId";
 
 export const revalidate = 0;

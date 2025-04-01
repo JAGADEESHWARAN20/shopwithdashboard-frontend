@@ -30,6 +30,35 @@ export interface Store {
      storeUrl?: string;
      userId: string;
 }
+// types/auth.ts
+export interface User {
+     id: string;
+     email: string;
+     name: string;
+     phone?: string;
+     address?: string;
+     image?: string;
+     role?: "ADMIN" | "CUSTOMER";
+}
+
+export interface AuthResponse {
+     token: string;
+     user: User;
+}
+
+export interface LogoutResponse {
+     success: boolean;
+}
+// types/auth.ts
+export interface UserProfile {
+     id: string;
+     email: string;
+     name: string;
+     phone?: string;
+     address?: string;
+     image?: string;
+     role: "ADMIN" | "CUSTOMER";
+}
 
 // export interface Product {
 //      id: string;
