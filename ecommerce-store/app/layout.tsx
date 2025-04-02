@@ -10,6 +10,7 @@ import ToastProvider from "@/providers/toast-provider";
 import Script from "next/script";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ReactNode } from "react";
+import { AuthProvider } from "@/context/auth-context"; // Add AuthProvider for custom auth context
 
 const font = Urbanist({ subsets: ["latin"] });
 
@@ -35,14 +36,15 @@ export default function RootLayout({ children }: RootLayoutProps) {
           signInFallbackRedirectUrl="/"
           signUpFallbackRedirectUrl="/"
         >
-      
+          <AuthProvider>
             <ModalProvider />
             <ToastProvider />
             <Navbar />
             <Toaster />
             {children}
             <Footer />
-          </ClerkProvider>
+          </AuthProvider>
+        </ClerkProvider>
       </body>
     </html>
   );
