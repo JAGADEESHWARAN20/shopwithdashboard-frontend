@@ -1,14 +1,14 @@
-// components/auth/signin-form.tsx
+// components/auth/login-form.tsx
 import { useState } from "react";
 import { signin } from "@/actions/auth/signin";
 import { useAuthHook } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 
-export const SignInForm = () => {
+export const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-     const { setAuth } = useAuthHook();
+  const { setAuth } = useAuthHook();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -16,7 +16,7 @@ export const SignInForm = () => {
     const response = await signin(email, password);
     if (response) {
       setAuth(response.token, response.user);
-      router.push("/"); // Redirect to main page
+      router.push("/");
     } else {
       setError("Invalid credentials");
     }
@@ -24,7 +24,7 @@ export const SignInForm = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <h2 className="text-2xl font-bold">Sign In</h2>
+      <h2 className="text-2xl font-bold">Login</h2>
       {error && <p className="text-red-500">{error}</p>}
       <div>
         <label>Email</label>
@@ -47,7 +47,7 @@ export const SignInForm = () => {
         />
       </div>
       <button type="submit" className="bg-blue-500 text-white p-2 w-full">
-        Sign In
+        Login
       </button>
     </form>
   );
