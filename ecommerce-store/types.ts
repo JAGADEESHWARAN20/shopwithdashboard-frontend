@@ -72,7 +72,7 @@ export interface LogoutResponse {
 export interface Size {
      id: string;
      name: string;
-     value: string;
+     value: string[];
 }
 
 export interface Image {

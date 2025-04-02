@@ -1,3 +1,5 @@
+"use client"
+
 import { notFound } from "next/navigation";
 import getCategory from "@/actions/stores/get-category";
 import getColors from "@/actions/stores/get-colors";
@@ -36,13 +38,13 @@ const CategoryPage = async ({ params, searchParams }: Props) => {
 
      const [products, sizes, colors, category] = await Promise.all([
           getProducts({ storeId, categoryId, colorId, sizeId }),
-          getSizes(),
-          getColors(),
+          getSizes(storeId),
+          getColors(storeId),
           getCategory(storeId, categoryId),
      ]);
 
      // Fetch billboard using billboardId
-     const billboard = category?.billboardId ? await getBillboard(storeId, category.billboardId) : null; // Corrected call
+     const billboard = category?.billboardId ? await getBillboard(storeId, category.billboardId) : null;
 
      return (
           <div className="bg-white">
