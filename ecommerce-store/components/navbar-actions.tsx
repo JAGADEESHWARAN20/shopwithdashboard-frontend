@@ -1,33 +1,48 @@
-"use client"
+"use client";
 
 import { ShoppingBag } from "lucide-react";
-import Button from "@/components/ui/Button";
+import  Button  from "@/components/ui/Button"; // Importing shadcn button
 import { useEffect, useState } from "react";
 import useCart from "@/hooks/use-cart";
 import { useRouter } from "next/navigation";
 
 const NavBarActions = () => {
      const router = useRouter();
-     const [isMounted, setIsMounted] = useState(false)
+     const [isMounted, setIsMounted] = useState(false);
      const cart = useCart();
 
      useEffect(() => {
-          setIsMounted(true)
-     }, [])
+          setIsMounted(true);
+     }, []);
 
      if (!isMounted) {
-          return null
+          return null;
      }
 
      return (
           <div className="ml-auto flex items-center pr-2 gap-x-4">
+               {/* Cart Button */}
                <Button onClick={() => router.push('/cart')} className="bg-black px-4 py-2 flex items-center rounded-full">
                     <ShoppingBag size={20} color="white" />
                     <span className="ml-2 text-sm font-medium text-white">{cart.items.length}</span>
                </Button>
 
-          </div >
-     )
-}
+               {/* Profile Button (Placeholder for Future Profile Page) */}
+               <Button variant="outline" onClick={() => router.push('/profile')}>
+                    Profile
+               </Button>
+
+               {/* Sign-In Button */}
+               <Button onClick={() => router.push('/sign-in')}>
+                    Sign In
+               </Button>
+
+               {/* Sign-Up Button */}
+               <Button variant="secondary" onClick={() => router.push('/sign-up')}>
+                    Sign Up
+               </Button>
+          </div>
+     );
+};
 
 export default NavBarActions;

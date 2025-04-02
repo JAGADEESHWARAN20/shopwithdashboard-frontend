@@ -2,16 +2,18 @@ import { cn } from "@/lib/utils";
 import { forwardRef } from "react";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-     // Add a dummy property to avoid ESLint error (optional)
-     customProp?: never;
+     variant?: "default" | "outline" | "secondary"; // Define accepted variants
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-     ({ className, children, disabled, type = "button", ...props }, ref) => {
+     ({ className, children, disabled, type = "button", variant = "default", ...props }, ref) => {
           return (
                <button
                     className={cn(
-                         "w-auto rounded-full bg-black px-5 py-3 disabled:cursor-not-allowed disabled:opacity-50 text-white font-semibold transition-all",
+                         "w-auto rounded-full px-5 py-3 disabled:cursor-not-allowed disabled:opacity-50 font-semibold transition-all",
+                         variant === "default" && "bg-black text-white",
+                         variant === "outline" && "border border-black text-black bg-transparent",
+                         variant === "secondary" && "bg-gray-200 text-black",
                          className
                     )}
                     ref={ref}
@@ -24,6 +26,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           );
      }
 );
+
 Button.displayName = "Button";
 
 export default Button;
