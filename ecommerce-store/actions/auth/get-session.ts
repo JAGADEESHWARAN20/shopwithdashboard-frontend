@@ -7,7 +7,7 @@ interface SessionResponse {
 
 export const getSession = async (token: string): Promise<SessionResponse | null> => {
      try {
-          const res = await fetch(`${API_URL}/auth/session`, {
+          const res = await fetch(`${API_URL}api/auth/session`, {
                headers: { Authorization: `Bearer ${token}` },
           });
           if (!res.ok) {

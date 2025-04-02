@@ -62,6 +62,13 @@ export interface UserProfile {
      role: "ADMIN" | "CUSTOMER";
 }
 
+// types.ts
+export interface LogoutResponse {
+     success: boolean;
+     message: string;
+}
+
+
 export interface Size {
      id: string;
      name: string;
