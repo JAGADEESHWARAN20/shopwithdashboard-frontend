@@ -8,7 +8,7 @@ const getProduct = async (storeId: string, id: string): Promise<Product> => {
                throw new Error("NEXT_PUBLIC_API_URL environment variable is not defined.");
           }
 
-          const res = await fetch(`${URL}/api/stores/${storeId}/products/${id}`);
+          const res = await fetch(`${URL}api/stores/${storeId}/products/${id}`);
 
           if (!res.ok) {
                // Handle HTTP errors (e.g., 404, 500)

@@ -6,7 +6,7 @@ export const getBillboard = async (storeId: string, id: string): Promise<Billboa
                throw new Error("NEXT_PUBLIC_API_URL environment variable is not defined.");
           }
 
-          const URL = `${process.env.NEXT_PUBLIC_API_URL}/api/stores/${storeId}/billboards/${id}`;
+          const URL = `${process.env.NEXT_PUBLIC_API_URL}api/stores/${storeId}/billboards/${id}`;
           const res = await fetch(URL);
 
           if (!res.ok) {

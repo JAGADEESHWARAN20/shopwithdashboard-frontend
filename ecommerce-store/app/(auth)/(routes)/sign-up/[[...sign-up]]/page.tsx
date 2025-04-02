@@ -8,7 +8,7 @@ const RegisterPage = () => {
   const router = useRouter();
 
   const handleSwitchToLogin = () => {
-    router.push("/signin");
+    router.push("/sign-in");
   };
 
   return (

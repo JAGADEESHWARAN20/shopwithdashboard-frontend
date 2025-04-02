@@ -1,20 +1,24 @@
+// types/index.ts
 export interface Billboard {
      id: string;
      label: string;
      imageUrl: string;
-     isFeatured: boolean;
+     isFeatured?: boolean; // Made optional to match Prisma schema
 }
 
 export interface Product {
      id: string;
      name: string;
-     price: number;
+     price: number; // Matches Prisma Float
      isFeatured: boolean;
      isArchived: boolean;
      images: Image[];
-     category: { id: string; name: string };
-     size: { id: string; name: string; value: string };
-     color: { id: string; name: string; value: string };
+     category: Category;
+     size: Size;
+     color: Color;
+     storeId: string; // Added to match Prisma schema
+     createdAt: string; // Added for completeness (Prisma DateTime maps to string in JSON)
+     updatedAt: string; // Added for completeness
 }
 
 export interface Category {
@@ -30,7 +34,14 @@ export interface Store {
      storeUrl?: string;
      userId: string;
 }
-// types/auth.ts
+
+export interface StoreName {
+     id: string;
+     name: string;
+     userId: string;
+     storeUrl?: string;
+}
+
 export interface User {
      id: string;
      email: string;
@@ -38,18 +49,9 @@ export interface User {
      phone?: string;
      address?: string;
      image?: string;
-     role?: "ADMIN" | "CUSTOMER";
+     role: "ADMIN" | "CUSTOMER"; // Made non-optional to match Prisma schema
 }
 
-export interface AuthResponse {
-     token: string;
-     user: User;
-}
-
-export interface LogoutResponse {
-     success: boolean;
-}
-// types/auth.ts
 export interface UserProfile {
      id: string;
      email: string;
@@ -59,26 +61,6 @@ export interface UserProfile {
      image?: string;
      role: "ADMIN" | "CUSTOMER";
 }
-
-export interface StoreName {
-     id: string;
-     name: string;
-     userId: string;
-     storeUrl?: string;
-}
-
-
-
-// export interface Product {
-//      id: string;
-//      category: Category;
-//      name: string;
-//      price: string;
-//      isFeatured: boolean;
-//      size: Size;
-//      color: Color;
-//      images: Image[];
-// }
 
 export interface Size {
      id: string;

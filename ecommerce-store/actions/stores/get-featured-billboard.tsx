@@ -6,7 +6,7 @@ const URL = `${process.env.NEXT_PUBLIC_API_URL}`;
 const getFeaturedBillboard = async (storeId: string): Promise<Billboard | null> => {
      try {
           // First try to get one marked as featured
-          const res = await fetch(`${URL}/api/${storeId}/?featured=true`);
+          const res = await fetch(`${URL}api/${storeId}/?featured=true`);
 
           if (!res.ok) {
                // If that fails, get all billboards
