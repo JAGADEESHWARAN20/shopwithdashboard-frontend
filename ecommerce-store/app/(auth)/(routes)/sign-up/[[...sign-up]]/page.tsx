@@ -1,24 +1,33 @@
-// app/(auth)/register/page.tsx
+// app/(auth)/(routes)/sign-up/[[...sign-up]]/page.tsx
 "use client";
 
-import { useRouter } from "next/navigation";
-import RegisterForm from "@/components/auth/register-form";
+import { SignUp } from "@clerk/nextjs";
+import { useState } from "react";
 
-const RegisterPage = () => {
-  const router = useRouter();
+const SignUpPage = () => {
+  const [signupError, setSignupError] = useState<string | null>(null);
 
-  const handleSwitchToLogin = () => {
-    router.push("/sign-in");
+  const handleSignUpError = (error: any) => {
+    if (error.message.includes("single session mode")) {
+      setSignupError("You're already signed in. Please sign out before creating a new account.");
+    } else {
+      setSignupError("An error occurred during signup.");
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-3xl font-bold text-center mb-6">Create an Account</h1>
-        <RegisterForm onSwitchToLogin={handleSwitchToLogin} />
+    <div className="flex justify-center items-center h-screen">
+      <div className="w-full max-w-md">
+        {signupError && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <strong className="font-bold">Error!</strong>
+            <span className="block sm:inline">{signupError}</span>
+          </div>
+        )}
+        <SignUp />
       </div>
     </div>
   );
 };
 
-export default RegisterPage;
+export default SignUpPage;
