@@ -38,6 +38,9 @@ const NavBarActions = () => {
                          if (!isSignedIn) {
                               router.push("/sign-in");
                          }
+                         if (isSignedIn) {
+                              router.push('/profile')
+                         }
                     }}
                     className="bg-gray-200 px-4 py-2 flex items-center rounded-full text-black"
                >
