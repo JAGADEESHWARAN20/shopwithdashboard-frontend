@@ -7,7 +7,6 @@ import Container from "@/components/ui/container";
 import MainNav from "@/components/main-nav";
 import NavBarActions from "@/components/navbar-actions";
 import { getStoreName } from "@/actions/stores/get-storename";
-import axios from "axios";
 import { Category, StoreName } from "@/types"; // Ensure correct type import
 import getCategories from "@/actions/stores/get-categories";
 
@@ -32,7 +31,6 @@ const Navbar = () => {
                     let currentStoreId = params?.storeId as string | undefined;
 
                     if (!currentStoreId) {
-                         // If no storeId in URL, fetch from getStoreName()
                          const domain = window.location.href;
                          const storeData: StoreName | null = await getStoreName(domain);
 
@@ -55,12 +53,24 @@ const Navbar = () => {
           };
 
           fetchStoreData();
-     }, [params?.storeId, isMounted]);
+     }, [params?.storeId, isMounted, router]); // Added `router` to dependency array
+
 
      useEffect(() => {
           if (!storeId || !isMounted) return;
-          getCategories(storeId)
+
+          const fetchCategories = async () => {
+               try {
+                    const categoryData = await getCategories(storeId);
+                    setCategories(categoryData); // Update categories state
+               } catch (error) {
+                    console.error("[NAVBAR_CATEGORIES_ERROR]", error);
+               }
+          };
+
+          fetchCategories();
      }, [storeId, isMounted]);
+
 
      if (!isMounted) {
           return (
