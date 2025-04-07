@@ -1,7 +1,6 @@
-// components/StoreFront.tsx
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface Store {
      id: string;
@@ -21,7 +20,7 @@ const StoreFront: React.FC<StoreFrontProps> = ({ initialStore }) => {
      const [wsMessage, setWsMessage] = useState<string>("");
      const ws = useRef<WebSocket | null>(null);
 
-     const connectWebSocket = useCallback(() => {
+     const connectWebSocket = () => {
           setWsStatus("Connecting");
           ws.current = new WebSocket("wss://admindashboardecom.vercel.app");
 
@@ -51,7 +50,7 @@ const StoreFront: React.FC<StoreFrontProps> = ({ initialStore }) => {
                console.error("WebSocket error:", error);
                setWsStatus("Disconnected");
           };
-     }, [store.id]); // Dependency on store.id
+     };
 
      useEffect(() => {
           connectWebSocket();
@@ -61,7 +60,7 @@ const StoreFront: React.FC<StoreFrontProps> = ({ initialStore }) => {
                     ws.current.close();
                }
           };
-     }, [connectWebSocket]); // Depend on memoized connectWebSocket
+     }, [store.id]);
 
      useEffect(() => {
           setStore(initialStore);
@@ -73,11 +72,7 @@ const StoreFront: React.FC<StoreFrontProps> = ({ initialStore }) => {
                <p className="text-lg">This is your e-commerce store at {store.storeUrl}</p>
                <div id="websocket-status" className="mt-4">
                     <span
-                         className={`w-4 h-4 rounded-full mr-2 inline-block ${wsStatus === "Connected"
-                                   ? "bg-green-500"
-                                   : wsStatus === "Connecting"
-                                        ? "bg-yellow-500"
-                                        : "bg-red-500"
+                         className={`w-4 h-4 rounded-full mr-2 inline-block ${wsStatus === "Connected" ? "bg-green-500" : wsStatus === "Connecting" ? "bg-yellow-500" : "bg-red-500"
                               }`}
                     ></span>
                     <span>WebSocket {wsStatus}</span>

@@ -1,24 +1,20 @@
-// types/index.ts
 export interface Billboard {
      id: string;
      label: string;
      imageUrl: string;
-     isFeatured?: boolean; // Made optional to match Prisma schema
+     isFeatured: boolean;
 }
 
 export interface Product {
      id: string;
      name: string;
-     price: number; // Matches Prisma Float
+     price: number;
      isFeatured: boolean;
      isArchived: boolean;
      images: Image[];
-     category: Category;
-     size: Size;
-     color: Color;
-     storeId: string; // Added to match Prisma schema
-     createdAt: string; // Added for completeness (Prisma DateTime maps to string in JSON)
-     updatedAt: string; // Added for completeness
+     category: { id: string; name: string };
+     size: { id: string; name: string; value: string };
+     color: { id: string; name: string; value: string };
 }
 
 export interface Category {
@@ -35,44 +31,21 @@ export interface Store {
      userId: string;
 }
 
-export interface StoreName {
-     id: string;
-     name: string;
-     userId: string;
-     storeUrl?: string;
-}
-
-export interface User {
-     id: string;
-     email: string;
-     name: string;
-     phone?: string;
-     address?: string;
-     image?: string;
-     role: "ADMIN" | "CUSTOMER"; // Made non-optional to match Prisma schema
-}
-
-export interface UserProfile {
-     id: string;
-     email: string;
-     name: string;
-     phone?: string;
-     address?: string;
-     image?: string;
-     role: "ADMIN" | "CUSTOMER";
-}
-
-// types.ts
-export interface LogoutResponse {
-     success: boolean;
-     message: string;
-}
-
+// export interface Product {
+//      id: string;
+//      category: Category;
+//      name: string;
+//      price: string;
+//      isFeatured: boolean;
+//      size: Size;
+//      color: Color;
+//      images: Image[];
+// }
 
 export interface Size {
      id: string;
      name: string;
-     value: string[];
+     value: string;
 }
 
 export interface Image {
