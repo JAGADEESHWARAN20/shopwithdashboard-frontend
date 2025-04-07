@@ -1,28 +1,12 @@
-"use client";
-
 import { Category } from "@/types";
+const URL = `${process.env.NEXT_PUBLIC_API_URL}/categories`;
 
-const getCategories = async (storeId: string): Promise<Category[]> => {
-     const url = `${process.env.NEXT_PUBLIC_API_URL}/api/stores/${storeId}/categories`;
+const getCategories = async (): Promise<Category[]> => {
 
-     try {
-          const res = await fetch(url, {
-               method: "GET",
-               headers: {
-                    "Content-Type": "application/json",
-               },
-          });
+     const res = await fetch(URL);
 
-          if (!res.ok) {
-               throw new Error(`Failed to fetch categories: ${res.status} ${res.statusText}`);
-          }
-
-          const categories: Category[] = await res.json();
-          return categories;
-     } catch (error) {
-          console.error("[GET_CATEGORIES]", error);
-          return [];
-     }
-};
+     return res.json();
+}
 
 export default getCategories;
+
