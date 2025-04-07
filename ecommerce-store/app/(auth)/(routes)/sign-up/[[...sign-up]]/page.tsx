@@ -3,20 +3,21 @@
 
 import { useRouter } from "next/navigation";
 import RegisterForm from "@/components/auth/register-form";
+import { Toaster } from "react-hot-toast"; // Make sure Toaster is included in your layout or here
 
 const RegisterPage = () => {
   const router = useRouter();
 
   const handleSwitchToLogin = () => {
-    router.push("/sign-in");
+    router.push("/sign-in"); // Or your actual login route
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-3xl font-bold text-center mb-6">Create an Account</h1>
-        <RegisterForm onSwitchToLogin={handleSwitchToLogin} />
-      </div>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
+      {/* Ensure Toaster is rendered somewhere in your app tree */}
+      <Toaster position="top-center" reverseOrder={false} />
+      {/* Removed the outer h1 and div, let the RegisterForm handle its own structure */}
+      <RegisterForm onSwitchToLogin={handleSwitchToLogin} />
     </div>
   );
 };

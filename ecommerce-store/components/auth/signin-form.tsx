@@ -1,17 +1,16 @@
-// components/auth/login-form.tsx
+// components/auth/signin-form.tsx
 "use client";
 
 import { useState } from "react";
-import { useSignIn } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { signin } from "@/actions/auth/signin";
 
-interface LoginFormProps {
+interface SigninFormProps {
   onSwitchToRegister?: () => void;
 }
 
-export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
-  const { isLoaded, signIn, setActive } = useSignIn();
+export const SigninForm: React.FC<SigninFormProps> = ({ onSwitchToRegister }) => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,29 +19,37 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isLoaded) return;
-
     setLoading(true);
     setError(null);
 
     try {
-      const signInAttempt = await signIn.create({
-        identifier: email,
-        password,
-      });
+      const response = await signin(email, password); // Your API call
 
-      if (signInAttempt.status === "complete") {
-        await setActive({ session: signInAttempt.createdSessionId });
+      if (response && "token" in response && "user" in response) {
+        // Authentication successful, you have the token and user details
+        const { token, user } = response;
+
+        console.log("Login successful!", { token, user });
+
+        // Store the token in local storage or a cookie for future requests
+        localStorage.setItem("authToken", String(token));
+
+        // Optionally, store user details in state or context
+        // setUser(user);
+
         toast.success("Logged in successfully!");
-        router.push("/");
+        router.push("/"); // Redirect to the dashboard or home page
+      } else if (response && "error" in response) {
+        setError(response.error);
+        toast.error(response.error);
       } else {
         setError("Login failed. Please check your credentials.");
         toast.error("Login failed. Please check your credentials.");
       }
     } catch (err: any) {
       console.error("Error during login:", err);
-      setError(err.errors?.[0]?.message || "An error occurred during login.");
-      toast.error(err.errors?.[0]?.message || "Login failed. Please try again.");
+      setError(err.message || "An unexpected error occurred");
+      toast.error("Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -53,6 +60,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
       <h2 className="text-2xl font-bold text-center mb-6">Log In</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && <p className="text-red-500 text-sm">{error}</p>}
+        {/* Email and Password input fields (as in your previous LoginForm) */}
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700">
             Email
@@ -83,7 +91,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
         </div>
         <button
           type="submit"
-          disabled={loading || !isLoaded}
+          disabled={loading}
           className="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
           {loading ? "Logging In..." : "Log In"}
