@@ -36,7 +36,11 @@ const NavBarActions = () => {
 
                {isSignedIn ? (
                     // User is signed in, show profile and logout
-                    <UserButton afterSignOutUrl="/" />
+                    <div className="flex items-center gap-x-2">
+                         {user?.imageUrl && <img src={user.imageUrl} alt="User Avatar" className="rounded-full h-8 w-8" />}
+                         <span>{user?.firstName || user?.username || 'User'}</span>
+                         <UserButton  />
+                    </div>
                ) : (
                     // User is not signed in, show sign in and sign up
                     <Drawer>
