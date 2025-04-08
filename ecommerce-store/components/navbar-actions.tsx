@@ -1,33 +1,54 @@
-"use client"
+"use client";
 
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, User } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { useEffect, useState } from "react";
-import useCart from "@/hooks/use-cart";
 import { useRouter } from "next/navigation";
+import { SignInButton, SignUpButton } from "@clerk/nextjs";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer"; // Assuming Drawer components are in this path
+import useCart from "@/hooks/use-cart";
 
 const NavBarActions = () => {
      const router = useRouter();
-     const [isMounted, setIsMounted] = useState(false)
+     const [isMounted, setIsMounted] = useState(false);
      const cart = useCart();
 
      useEffect(() => {
-          setIsMounted(true)
-     }, [])
+          setIsMounted(true);
+     }, []);
 
+     // Avoid rendering components that rely on client-side rendering before mount
      if (!isMounted) {
-          return null
+          return null;
      }
 
      return (
           <div className="ml-auto flex items-center pr-2 gap-x-4">
-               <Button onClick={() => router.push('/cart')} className="bg-black px-4 py-2 flex items-center rounded-full">
-                    <ShoppingBag size={20} color="white" />
-                    <span className="ml-2 text-sm font-medium text-white">{cart.items.length}</span>
+               {/* Cart Button */}
+               <Button
+                    onClick={() => router.push("/cart")}
+                    className="rounded-full bg-black px-4 py-2 flex items-center text-white hover:bg-gray-800 transition-colors"
+               >
+                    <ShoppingBag size={20} className="text-white" />
+                    <span className="ml-2 text-sm font-medium">{cart.items.length}</span>
                </Button>
 
-          </div >
-     )
-}
+               {/* User Authentication Drawer */}
+               <Drawer>
+                    <DrawerTrigger asChild>
+                         <Button variant="outline" size="icon" className="hover:bg-accent hover:text-accent-foreground transition-colors">
+                              <User className="h-4 w-4" />
+                         </Button>
+                    </DrawerTrigger>
+                    <DrawerContent className="p-4">
+                         <div className="flex flex-col space-y-2">
+                              <SignInButton />
+                              <SignUpButton />
+                         </div>
+                    </DrawerContent>
+               </Drawer>
+          </div>
+     );
+};
 
 export default NavBarActions;
