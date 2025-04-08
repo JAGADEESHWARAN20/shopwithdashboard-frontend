@@ -4,7 +4,7 @@ import { ShoppingBag, User } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { SignInButton, SignUpButton, useUser, UserButton } from "@clerk/nextjs";
+import { SignInButton, SignUpButton, useUser, UserButton, SignedOut, SignedIn } from "@clerk/nextjs";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer"; // Assuming Drawer components are in this path
 import useCart from "@/hooks/use-cart";
 
@@ -39,7 +39,9 @@ const NavBarActions = () => {
                     <div className="flex items-center gap-x-2">
                          {user?.imageUrl && <img src={user.imageUrl} alt="User Avatar" className="rounded-full h-8 w-8" />}
                          <span>{user?.firstName || user?.username || 'User'}</span>
+                         <SignedIn>
                          <UserButton />
+                         </SignedIn>
                     </div>
                ) : (
                     // User is not signed in, show sign in and sign up
@@ -55,8 +57,10 @@ const NavBarActions = () => {
                          </DrawerTrigger>
                          <DrawerContent className="p-4">
                               <div className="flex flex-col space-y-2">
-                                   <SignInButton />
-                                   <SignUpButton />
+                                        <SignedOut>
+                                             <SignInButton />
+                                             <SignUpButton />
+                      </SignedOut>
                               </div>
                          </DrawerContent>
                     </Drawer>

@@ -7,7 +7,7 @@ import { Toaster } from 'react-hot-toast';
 import ModalProvider from "@/providers/modal-providers";
 import ToastProvider from "@/providers/toast-provider";
 import Script from "next/script";
-import { ClerkProvider,SignInButton,SignUpButton,SignedOut,SignedIn,UserButton } from '@clerk/nextjs';
+import { ClerkProvider } from '@clerk/nextjs';
 
 
 const font = Urbanist({ subsets: ['latin'] })
@@ -31,15 +31,6 @@ export default function RootLayout({
           strategy="beforeInteractive"
         />
         </head>
-        <header>
-          <SignedOut>
-            <SignInButton />
-            <SignUpButton />
-          </SignedOut>
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
-        </header>
       <body className={font.className}>
         <ModalProvider />
         <ToastProvider />
