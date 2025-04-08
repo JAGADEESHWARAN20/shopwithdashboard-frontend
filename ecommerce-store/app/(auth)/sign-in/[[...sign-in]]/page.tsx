@@ -17,5 +17,15 @@ export default function Page() {
      }, [isSignedIn, router]);
 
      // If the user is already signed in, this component will likely not render for long
-     return <SignIn />;
+     return (
+          <>
+          <div className="flex justify-center items-center h-auto w-auto overflow-scroll scrollbar-hidden  bg-gray-100">
+
+
+               <SignIn />
+
+
+          </div>
+          </>
+     );
 }

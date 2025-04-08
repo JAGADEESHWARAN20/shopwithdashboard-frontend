@@ -40,7 +40,7 @@ const NavBarActions = () => {
                          {user?.imageUrl && <img src={user.imageUrl} alt="User Avatar" className="rounded-full h-8 w-8" />}
                          <span>{user?.firstName || user?.username || 'User'}</span>
                          <SignedIn>
-                         <UserButton />
+                             <UserButton />
                          </SignedIn>
                     </div>
                ) : (
@@ -60,7 +60,7 @@ const NavBarActions = () => {
                                         <SignedOut>
                                              <SignInButton />
                                              <SignUpButton />
-                      </SignedOut>
+                                       </SignedOut>
                               </div>
                          </DrawerContent>
                     </Drawer>
