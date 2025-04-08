@@ -55,7 +55,7 @@ const NavBarActions = () => {
                          </DrawerTrigger>
                          <DrawerContent className="p-4">
                               <div className="flex flex-col space-y-2">
-                                   <SignInButton forceRedirectUrl="/" />
+                                   <SignInButton forceRedirectUrl="/sign-in" />
                                    <SignUpButton />
                               </div>
                          </DrawerContent>
