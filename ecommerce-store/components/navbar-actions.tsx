@@ -39,7 +39,7 @@ const NavBarActions = () => {
                     <div className="flex items-center gap-x-2">
                          {user?.imageUrl && <img src={user.imageUrl} alt="User Avatar" className="rounded-full h-8 w-8" />}
                          <span>{user?.firstName || user?.username || 'User'}</span>
-                         <UserButton  />
+                         <UserButton />
                     </div>
                ) : (
                     // User is not signed in, show sign in and sign up
@@ -56,7 +56,7 @@ const NavBarActions = () => {
                          <DrawerContent className="p-4">
                               <div className="flex flex-col space-y-2">
                                    <SignInButton forceRedirectUrl="/sign-in" />
-                                   <SignUpButton />
+                                   <SignUpButton forceRedirectUrl="/sign-up" />
                               </div>
                          </DrawerContent>
                     </Drawer>
