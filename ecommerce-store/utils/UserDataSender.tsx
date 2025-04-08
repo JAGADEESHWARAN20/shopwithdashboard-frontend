@@ -1,0 +1,21 @@
+"use client";
+
+import { useEffect,useState } from "react";
+import { useUser } from "@clerk/nextjs";
+import { postUserDetails } from "@/actions/post-userdetails"; // Adjust the import path
+
+const UserDataSender = () => {
+     const { isSignedIn } = useUser();
+     const [hasSentDetails, setHasSentDetails] = useState(false);
+
+     useEffect(() => {
+          if (isSignedIn && !hasSentDetails) {
+               postUserDetails();
+               setHasSentDetails(true); // Prevent sending multiple times on re-renders
+          }
+     }, [isSignedIn, hasSentDetails]);
+
+     return null; // This component doesn't need to render anything visible
+};
+
+export default UserDataSender;
