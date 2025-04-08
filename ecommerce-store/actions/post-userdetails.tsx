@@ -5,7 +5,7 @@ import { useUser } from "@clerk/nextjs";
 export const postUserDetails = async () => {
      const { user } = useUser();
 
-     if (user?.id && user?.firstName) { // Ensure user and firstName exist
+     if (user?.id && user?.firstName && user?.emailAddresses?.[0]?.emailAddress) {
           try {
                const response = await fetch(
                     "https://admindashboardecom.vercel.app/api/user-added",
@@ -15,8 +15,10 @@ export const postUserDetails = async () => {
                               "Content-Type": "application/json",
                          },
                          body: JSON.stringify({
-                              userId: user.id, // Correctly using the Clerk User ID
-                              name: user.firstName + (user.lastName ? ` ${user.lastName}` : ""), // Correctly accessing firstName and lastName
+                              userId: user.id,
+                              name: user.firstName + (user.lastName ? ` ${user.lastName}` : ""),
+                              email: user.emailAddresses[0].emailAddress, // Send the email
+                              // We'll handle password on the backend for Google users
                          }),
                     }
                );
