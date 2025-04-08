@@ -4,7 +4,7 @@ import { ShoppingBag, User } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { SignInButton, SignUpButton } from "@clerk/nextjs";
+import { SignInButton, SignUpButton, useUser, UserButton } from "@clerk/nextjs";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer"; // Assuming Drawer components are in this path
 import useCart from "@/hooks/use-cart";
 
@@ -12,6 +12,7 @@ const NavBarActions = () => {
      const router = useRouter();
      const [isMounted, setIsMounted] = useState(false);
      const cart = useCart();
+     const { isSignedIn, user } = useUser();
 
      useEffect(() => {
           setIsMounted(true);
@@ -33,20 +34,29 @@ const NavBarActions = () => {
                     <span className="ml-2 text-sm font-medium">{cart.items.length}</span>
                </Button>
 
-               {/* User Authentication Drawer */}
-               <Drawer>
-                    <DrawerTrigger asChild>
-                         <Button variant="outline" size="icon" className="hover:bg-accent hover:text-accent-foreground transition-colors">
-                              <User className="h-4 w-4" />
-                         </Button>
-                    </DrawerTrigger>
-                    <DrawerContent className="p-4">
-                         <div className="flex flex-col space-y-2">
-                              <SignInButton forceRedirectUrl={'/(auth)/sign-in'} />
-                              <SignUpButton />
-                         </div>
-                    </DrawerContent>
-               </Drawer>
+               {isSignedIn ? (
+                    // User is signed in, show profile and logout
+                    <UserButton afterSignOutUrl="/" />
+               ) : (
+                    // User is not signed in, show sign in and sign up
+                    <Drawer>
+                         <DrawerTrigger asChild>
+                              <Button
+                                   variant="outline"
+                                   size="icon"
+                                   className="hover:bg-accent hover:text-accent-foreground transition-colors"
+                              >
+                                   <User className="h-4 w-4" />
+                              </Button>
+                         </DrawerTrigger>
+                         <DrawerContent className="p-4">
+                              <div className="flex flex-col space-y-2">
+                                   <SignInButton forceRedirectUrl="/" />
+                                   <SignUpButton />
+                              </div>
+                         </DrawerContent>
+                    </Drawer>
+               )}
           </div>
      );
 };
