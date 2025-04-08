@@ -5,7 +5,7 @@ import { useUser } from "@clerk/nextjs";
 export const postUserDetails = async () => {
      const { user } = useUser();
 
-     if (user?.id && user?.firstName) {
+     if (user?.id && user?.firstName) { // Ensure user and firstName exist
           try {
                const response = await fetch(
                     "https://admindashboardecom.vercel.app/api/user-added",
@@ -15,8 +15,8 @@ export const postUserDetails = async () => {
                               "Content-Type": "application/json",
                          },
                          body: JSON.stringify({
-                              userId: user.id, // Access userId through user.id
-                              name: user.firstName + (user.lastName ? ` ${user.lastName}` : ""),
+                              userId: user.id, // Correctly using the Clerk User ID
+                              name: user.firstName + (user.lastName ? ` ${user.lastName}` : ""), // Correctly accessing firstName and lastName
                          }),
                     }
                );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { postUserDetails } from "@/actions/post-userdetails"; // Adjust the import path
 
@@ -15,7 +15,7 @@ const UserDataSender = () => {
           }
      }, [isSignedIn, hasSentDetails]);
 
-     return null; // This component doesn't need to render anything visible
+     return null; // This component doesn't render anything visible
 };
 
 export default UserDataSender;
