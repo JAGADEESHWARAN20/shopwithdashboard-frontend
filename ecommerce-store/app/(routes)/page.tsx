@@ -13,7 +13,7 @@ const HomePage = async () => {
 
      return (
           <>
-               <UserDataSender /> {/* Render the UserDataSender component */}
+               <UserDataSender /> 
                <Container>
                     <div className="space-y-10 pb-10">
                          <Billboard data={billboard} />
