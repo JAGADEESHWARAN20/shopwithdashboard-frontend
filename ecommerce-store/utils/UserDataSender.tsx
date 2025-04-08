@@ -11,11 +11,11 @@ const UserDataSender = () => {
      useEffect(() => {
           if (isSignedIn && !hasSentDetails) {
                postUserDetails();
-               setHasSentDetails(true); // Prevent sending multiple times on re-renders
+               setHasSentDetails(true); 
           }
      }, [isSignedIn, hasSentDetails]);
 
-     return null; // This component doesn't render anything visible
+     return null; 
 };
 
 export default UserDataSender;

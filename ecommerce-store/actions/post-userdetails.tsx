@@ -17,17 +17,18 @@ export const postUserDetails = async () => {
                          body: JSON.stringify({
                               userId: user.id,
                               name: user.firstName + (user.lastName ? ` ${user.lastName}` : ""),
-                              email: user.emailAddresses[0].emailAddress, // Send the email
-                              // We'll handle password on the backend for Google users
+                              email: user.emailAddresses[0].emailAddress,
                          }),
                     }
                );
 
                if (response.ok) {
-                    console.log("User details sent to backend successfully!");
-                    // Optionally handle success (e.g., display a message)
+                    const data = await response.json(); // Parse the JSON response
+                    console.log("User details sent to backend successfully!", data);
+                    // Optionally handle success (e.g., display a message, redirect)
                } else {
-                    console.error("Failed to send user details to backend:", response.status);
+                    const errorData = await response.json(); // Parse the JSON error response
+                    console.error("Failed to send user details to backend:", response.status, errorData);
                     // Optionally handle error (e.g., display an error message)
                }
           } catch (error) {
