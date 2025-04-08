@@ -11,7 +11,7 @@ export default function SignUpPage() {
 
      useEffect(() => {
           if (isSignedIn) {
-               router.push('/'); // Redirect to homepage after successful signup
+               router.push('/sign-in'); // Redirect to homepage after successful signup
           }
      }, [isSignedIn, router]);
 
