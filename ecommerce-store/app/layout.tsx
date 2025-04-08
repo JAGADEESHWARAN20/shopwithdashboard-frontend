@@ -23,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider afterSignOutUrl="/sign-up">
+    <ClerkProvider afterSignOutUrl="/">
     <html lang="en">
       <head>
         <Script
