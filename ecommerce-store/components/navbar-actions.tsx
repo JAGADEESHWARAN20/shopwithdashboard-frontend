@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { SignInButton, SignUpButton, useUser, UserButton, SignedOut, SignedIn } from "@clerk/nextjs";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer"; // Assuming Drawer components are in this path
 import useCart from "@/hooks/use-cart";
+import Image from 'next/image';
 
 const NavBarActions = () => {
      const router = useRouter();
@@ -37,7 +38,7 @@ const NavBarActions = () => {
                {isSignedIn ? (
                     // User is signed in, show profile and logout
                     <div className="flex items-center gap-x-2">
-                         {user?.imageUrl && <img src={user.imageUrl} alt="User Avatar" className="rounded-full h-8 w-8" />}
+                         {user?.imageUrl && <Image src={user.imageUrl} alt="User Avatar" className="rounded-full h-8 w-8" />}
                          <span>{user?.firstName || user?.username || 'User'}</span>
                          <SignedIn>
                              <UserButton />
