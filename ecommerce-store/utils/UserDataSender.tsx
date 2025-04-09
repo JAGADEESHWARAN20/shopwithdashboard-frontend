@@ -2,20 +2,20 @@
 
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import { postUserDetails } from "@/actions/post-userdetails"; // Adjust the import path
+import { postUserDetails } from "@/actions/post-userdetails"; // Adjust the import path if necessary
 
 const UserDataSender = () => {
-     const { isSignedIn } = useUser();
-     const [hasSentDetails, setHasSentDetails] = useState(false);
+    const { isSignedIn } = useUser();
+    const [hasSentDetails, setHasSentDetails] = useState(false);
 
-     useEffect(() => {
-          if (isSignedIn && !hasSentDetails) {
-               postUserDetails();
-               setHasSentDetails(true); 
-          }
-     }, [isSignedIn, hasSentDetails]);
+    useEffect(() => {
+        if (isSignedIn && !hasSentDetails) {
+            postUserDetails();
+            setHasSentDetails(true);
+        }
+    }, [isSignedIn, hasSentDetails]);
 
-     return null; 
+    return null;
 };
 
 export default UserDataSender;
