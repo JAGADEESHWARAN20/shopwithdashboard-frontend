@@ -9,7 +9,7 @@ export default function SyncUser() {
   useEffect(() => {
     if (isLoaded && isSignedIn && user) {
       const sendUserToServer = async () => {
-        const res = await fetch('/api/user-added', {
+        const res = await fetch('https://admindashboardecom.vercel.app/api/user-added', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
