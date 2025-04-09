@@ -1,7 +1,18 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
 
-export async function POST() {
+export async function POST(req: NextRequest) {
+    const origin = req.headers.get("origin");
+
+    if (!origin || !isAllowedOrigin(origin)) {
+        return new NextResponse(JSON.stringify({ error: "CORS: Origin not allowed." }), {
+            status: 403,
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+    }
+
     const user = await currentUser();
 
     if (user?.id && user?.firstName && user?.emailAddresses?.[0]?.emailAddress) {
@@ -23,7 +34,13 @@ export async function POST() {
 
             if (response.ok) {
                 const data = await response.json(); // Parse the JSON response
-                return NextResponse.json({ message: "User details sent to backend successfully!", data });
+                return NextResponse.json({ message: "User details sent to backend successfully!", data }, {
+                    headers: {
+                        "Access-Control-Allow-Origin": origin,
+                        "Access-Control-Allow-Methods": "POST, OPTIONS", // Adjust as needed
+                        "Access-Control-Allow-Headers": "Content-Type, Authorization", // Adjust as needed
+                    },
+                });
             } else {
                 const errorData = await response.json(); 
                 console.log(errorData)
@@ -34,5 +51,37 @@ export async function POST() {
         }
     } else {
         return NextResponse.json({ error: "User ID or name not available." }, { status: 400 });
+    }
+}
+
+// Function to check if the origin ends with the allowed domain
+function isAllowedOrigin(origin: string | null): boolean {
+    if (!origin) {
+        return false;
+    }
+    return origin.endsWith("ecommercestore-online.vercel.app") || false;
+}
+
+// Handle OPTIONS request for preflight
+export async function OPTIONS(req: NextRequest) {
+    const origin = req.headers.get("origin");
+
+    if (origin && isAllowedOrigin(origin)) {
+        return new NextResponse(null, {
+            status: 204,
+            headers: {
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Methods": "POST, OPTIONS", // Adjust as needed
+                "Access-Control-Allow-Headers": "Content-Type, Authorization", // Adjust as needed
+                "Access-Control-Max-Age": "86400", // Optional: How long the preflight response can be cached (in seconds)
+            },
+        });
+    } else {
+        return new NextResponse(JSON.stringify({ error: "CORS: Origin not allowed." }), {
+            status: 403,
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
     }
 }
