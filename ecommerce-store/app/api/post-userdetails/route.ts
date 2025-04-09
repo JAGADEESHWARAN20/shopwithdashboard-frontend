@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
 
-export async function POST(req: NextRequest) {
+export async function POST() {
     const user = await currentUser();
 
     if (user?.id && user?.firstName && user?.emailAddresses?.[0]?.emailAddress) {
