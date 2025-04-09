@@ -25,7 +25,8 @@ export async function POST() {
                 const data = await response.json(); // Parse the JSON response
                 return NextResponse.json({ message: "User details sent to backend successfully!", data });
             } else {
-                const errorData = await response.json(); // Parse the JSON error response
+                const errorData = await response.json(); 
+                console.log(errorData)
                 return NextResponse.json({ error: "Failed to send user details to backend", details: errorData }, { status: response.status });
             }
         } catch (error) {
