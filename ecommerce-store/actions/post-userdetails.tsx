@@ -8,12 +8,13 @@ export const postUserDetails = async () => {
             method: 'POST',
         });
 
-        const data = await response.json();
+        const text = await response.text();
+        const data = text ? JSON.parse(text) : {};
 
         if (response.ok) {
             console.log("User details sent to backend successfully!", data);
         } else {
-            console.error("Failed to send user details to backend:", response.status, data);
+            console.error("Failed to send user details:", response.status, data);
         }
     } catch (error) {
         console.error("Error sending user details:", error);

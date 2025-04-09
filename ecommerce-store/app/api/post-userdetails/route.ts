@@ -17,34 +17,31 @@ export async function POST(req: NextRequest) {
 
     if (user?.id && user?.firstName && user?.emailAddresses?.[0]?.emailAddress) {
         try {
-            const response = await fetch(
-                "https://admindashboardecom.vercel.app/api/user-added",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        userId: user.id,
-                        name: user.firstName + (user.lastName ? ` ${user.lastName}` : ""),
-                        email: user.emailAddresses[0].emailAddress,
-                    }),
-                }
-            );
+            const response = await fetch("https://admindashboardecom.vercel.app/api/user-added", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    userId: user.id,
+                    name: user.firstName + (user.lastName ? ` ${user.lastName}` : ""),
+                    email: user.emailAddresses[0].emailAddress,
+                }),
+            });
+
+            const text = await response.text();
+            const data = text ? JSON.parse(text) : {};
 
             if (response.ok) {
-                const data = await response.json(); // Parse the JSON response
                 return NextResponse.json({ message: "User details sent to backend successfully!", data }, {
                     headers: {
                         "Access-Control-Allow-Origin": origin,
-                        "Access-Control-Allow-Methods": "POST, OPTIONS", // Adjust as needed
-                        "Access-Control-Allow-Headers": "Content-Type, Authorization", // Adjust as needed
+                        "Access-Control-Allow-Methods": "POST, OPTIONS",
+                        "Access-Control-Allow-Headers": "Content-Type, Authorization",
                     },
                 });
             } else {
-                const errorData = await response.json(); 
-                console.log(errorData)
-                return NextResponse.json({ error: "Failed to send user details to backend", details: errorData }, { status: response.status });
+                return NextResponse.json({ error: "Failed to send user details to backend", details: data }, { status: response.status });
             }
         } catch (error) {
             return NextResponse.json({ error: "Error sending user details", details: error }, { status: 500 });
@@ -54,15 +51,17 @@ export async function POST(req: NextRequest) {
     }
 }
 
-// Function to check if the origin ends with the allowed domain
 function isAllowedOrigin(origin: string | null): boolean {
-    if (!origin) {
-        return false;
-    }
-    return origin.endsWith("ecommercestore-online.vercel.app") || false;
+    if (!origin) return false;
+
+    const allowed = [
+        "https://ecommercestore-online.vercel.app",
+        "https://kajol-ecommercestore-online.vercel.app",
+    ];
+
+    return allowed.includes(origin);
 }
 
-// Handle OPTIONS request for preflight
 export async function OPTIONS(req: NextRequest) {
     const origin = req.headers.get("origin");
 
@@ -71,9 +70,9 @@ export async function OPTIONS(req: NextRequest) {
             status: 204,
             headers: {
                 "Access-Control-Allow-Origin": origin,
-                "Access-Control-Allow-Methods": "POST, OPTIONS", // Adjust as needed
-                "Access-Control-Allow-Headers": "Content-Type, Authorization", // Adjust as needed
-                "Access-Control-Max-Age": "86400", // Optional: How long the preflight response can be cached (in seconds)
+                "Access-Control-Allow-Methods": "POST, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+                "Access-Control-Max-Age": "86400",
             },
         });
     } else {
