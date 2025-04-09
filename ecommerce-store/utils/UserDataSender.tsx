@@ -1,21 +1,36 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useUser } from "@clerk/nextjs";
-import { postUserDetails } from "@/actions/post-userdetails"; // Adjust the import path if necessary
+import { useEffect } from 'react';
+import { useUser } from '@clerk/nextjs';
 
-const UserDataSender = () => {
-    const { isSignedIn } = useUser();
-    const [hasSentDetails, setHasSentDetails] = useState(false);
+export default function SyncUser() {
+  const { user, isSignedIn, isLoaded } = useUser();
 
-    useEffect(() => {
-        if (isSignedIn && !hasSentDetails) {
-            postUserDetails();
-            setHasSentDetails(true);
+  useEffect(() => {
+    if (isLoaded && isSignedIn && user) {
+      const sendUserToServer = async () => {
+        const res = await fetch('/api/user-added', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: user.id,
+            email: user.primaryEmailAddress?.emailAddress,
+            fullName: user.fullName,
+            imageUrl: user.imageUrl,
+            externalAccounts: user.externalAccounts, // includes Google info
+          }),
+        });
+
+        if (!res.ok) {
+          console.error('Failed to send user data:', await res.text());
         }
-    }, [isSignedIn, hasSentDetails]);
+      };
 
-    return null;
-};
+      sendUserToServer();
+    }
+  }, [user, isSignedIn, isLoaded]);
 
-export default UserDataSender;
+  return null;
+}
