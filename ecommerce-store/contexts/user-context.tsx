@@ -1,6 +1,4 @@
 // contexts/UserContext.tsx
-"use client"
-
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useAuth } from '@clerk/nextjs'
 import { User } from '@/types'
