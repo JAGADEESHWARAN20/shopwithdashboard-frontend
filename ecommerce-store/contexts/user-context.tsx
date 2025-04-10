@@ -1,11 +1,9 @@
-// contexts/UserContext.tsx
 "use client";  // Add this at the top of the file
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useAuth } from '@clerk/nextjs';
 import { User } from '@/types';
-import { postUserDataToAdminDashboard } from "@/actions/post-userdata"; // Import the function
-import { currentUser } from '@clerk/nextjs/server';
+import { getUserData, postUserDataToAdminDashboard } from "@/actions/post-userdata"; // Import the updated functions
 
 interface UserContextType {
      user: User | null;
@@ -31,25 +29,11 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
      useEffect(() => {
           const fetchAndPostUserData = async () => {
                try {
-                    // Fetch user from Clerk
-                    const user = await currentUser();
-
-                    if (user) {
-                         const primaryEmailObj = user.emailAddresses.find(
-                              (email) => email.id === user.primaryEmailAddressId
-                         );
-
-                         const userData = {
-                              email: primaryEmailObj?.emailAddress || '',
-                              name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
-                              image: user.imageUrl,
-                              emailVerified: primaryEmailObj?.verification?.status === 'verified',
-                              phone: user.phoneNumbers?.[0]?.phoneNumber || null,
-                              role: 'CUSTOMER', // Or extract from Clerk metadata
-                         };
-
+                    // Fetch user from Clerk using the `getUserData` function
+                    const userData = await getUserData();
+                    if (userData) {
                          // Post the user data to the admin dashboard API
-                         await postUserDataToAdminDashboard(userData); // Call the post function
+                         await postUserDataToAdminDashboard(userData);
                     }
                } catch (error) {
                     console.error('Error fetching or posting user data:', error);
