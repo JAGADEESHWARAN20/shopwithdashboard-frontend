@@ -14,6 +14,7 @@ export default function SyncUser() {
           headers: {
             'Content-Type': 'application/json',
           },
+          credentials: "include", // important if using cookies/auth
           body: JSON.stringify({
             id: user.id,
             email: user.primaryEmailAddress?.emailAddress,
