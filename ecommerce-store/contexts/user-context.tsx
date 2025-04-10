@@ -1,10 +1,8 @@
 // contexts/UserContext.tsx
-'use client'
-
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useAuth } from '@clerk/nextjs'
 import { User } from '@/types'
-import { postUserDataToAdminDashboard } from "@/actions/post-userdata";
+import { postUserDataToAdminDashboard } from "@/actions/post-userdata"; // Import the function
 import { currentUser } from '@clerk/nextjs/server';
 
 interface UserContextType {
@@ -22,8 +20,13 @@ const UserContext = createContext<UserContextType>({
 })
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
+     const [user, setUser] = useState<User | null>(null)
+     const [isLoading, setIsLoading] = useState(true)
+     const [error, setError] = useState<string | null>(null)
+
+     const { userId, getToken } = useAuth()
+
      useEffect(() => {
-          // Function to fetch user data and send it to the admin dashboard
           const fetchAndPostUserData = async () => {
                try {
                     // Fetch user from Clerk
@@ -44,7 +47,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
                          };
 
                          // Post the user data to the admin dashboard API
-                         await postUserDataToAdminDashboard(userData);
+                         await postUserDataToAdminDashboard(userData); // Call the post function
                     }
                } catch (error) {
                     console.error('Error fetching or posting user data:', error);
@@ -53,12 +56,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
           // Call the function when the component mounts
           fetchAndPostUserData();
-     }, []); // Empty dependency array ensures this runs once on component mount
-
-     const { userId, getToken } = useAuth()
-     const [user, setUser] = useState<User | null>(null)
-     const [isLoading, setIsLoading] = useState(true)
-     const [error, setError] = useState<string | null>(null)
+     }, []) // Empty dependency array ensures this runs once on component mount
 
      const fetchUser = async () => {
           try {
