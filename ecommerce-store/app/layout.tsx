@@ -8,6 +8,7 @@ import ModalProvider from "@/providers/modal-providers";
 import ToastProvider from "@/providers/toast-provider";
 import Script from "next/script";
 import { ClerkProvider } from '@clerk/nextjs';
+import { UserProvider } from "@/contexts/user-context";
 
 
 const font = Urbanist({ subsets: ['latin'] })
@@ -31,13 +32,15 @@ export default function RootLayout({
           strategy="beforeInteractive"
         />
         </head>
-      <body className={font.className}>
+        <body className={font.className}>
+          <UserProvider >
         <ModalProvider />
         <ToastProvider />
         <Navbar />
         <Toaster />
-        {children}
-        <Footer />
+            {children}
+            <Footer />
+          </UserProvider>
       </body>
       </html>
       </ClerkProvider>

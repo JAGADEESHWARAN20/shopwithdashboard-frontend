@@ -9,7 +9,15 @@ export interface Category {
      name: string;
      billboard: Billboard;
 }
-
+// types/index.ts
+export interface User {
+     id: string
+     firstName: string | null
+     lastName: string | null
+     email: string
+     imageUrl: string
+     // Add any additional fields you need
+}
 export interface Product {
      id: string;
      category: Category;

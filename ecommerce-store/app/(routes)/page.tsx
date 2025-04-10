@@ -3,7 +3,7 @@ import Billboard from "@/components/billboard";
 import getBillboards from '@/actions/get-billboards';
 import getProducts from "@/actions/get-products";
 import ProductList from "@/components/product-list";
-import SyncUser from "@/utils/UserDataSender"; // Adjust the import path accordingly
+
 
 export const revalidate = 0;
 
@@ -14,7 +14,7 @@ const HomePage = async () => {
   return (
     <>
       <Container>
-        <SyncUser />
+
         <div className="space-y-10 pb-10">
           <Billboard data={billboard} />
           <div className="flex flex-col gap-y-8 px-4 sm:px-6 lg:px-8">
